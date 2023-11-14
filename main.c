@@ -1,5 +1,6 @@
 #include "defs.h"
 //asdf
+// hello my name is kina
 int main()
 {
     // Initialize the random number generator
