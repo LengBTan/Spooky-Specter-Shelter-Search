@@ -27,17 +27,28 @@ enum LoggerDetails { LOG_FEAR, LOG_BORED, LOG_EVIDENCE, LOG_SUFFICIENT, LOG_INSU
 //structs
 typedef struct Room{
     char name[MAX_STR];//name of the room
-    //linked list of other rooms it is connected to
+    RoomListType adjRooms;//linked list of adjacent rooms it is connected to
     //linked list of evidence that ghost has left
-    //collection of hunters in the room (linkedlist?)
+    //collection of hunters in the room (probably just use an array since # of hunters dont change during runtime)
+    GhostType *ghost;//pointer to the ghost that is in the room
     sem_t mutex;//semaphore to prevent the room from being modified by multiple threads
 }RoomType;
 
+typedef struct RoomNode{//roomNodes for the RoomList
+    RoomType *data;//points to the room
+    RoomNodeType *next;//points to the next node
+    RoomNodeType *prev;//points to the previous node
+}RoomNodeType;
 
+typedef struct RoomList{//doubly linked list, store the head and tail
+    int size;//stores the size of the room list
+    RoomNodeType *head;
+    RoomNodeType *tail;
+}RoomListType;
 
 typedef struct House{
     //collection of hunters, maybe just an array of hunters?
-    //linkedList of rooms
+    RoomListType rooms;//linkedList of rooms
     //shared evidence list that hunters access
 }HouseType;
 
