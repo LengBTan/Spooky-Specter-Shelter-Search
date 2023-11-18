@@ -24,6 +24,43 @@ enum EvidenceType { EMF, TEMPERATURE, FINGERPRINTS, SOUND, EV_COUNT, EV_UNKNOWN 
 enum GhostClass { POLTERGEIST, BANSHEE, BULLIES, PHANTOM, GHOST_COUNT, GH_UNKNOWN };
 enum LoggerDetails { LOG_FEAR, LOG_BORED, LOG_EVIDENCE, LOG_SUFFICIENT, LOG_INSUFFICIENT, LOG_UNKNOWN };
 
+//structs
+typedef struct Room{
+    char name[MAX_STR];//name of the room
+    //linked list of other rooms it is connected to
+    //linked list of evidence that ghost has left
+    //collection of hunters in the room (linkedlist?)
+    sem_t mutex;//semaphore to prevent the room from being modified by multiple threads
+}RoomType;
+
+
+
+typedef struct House{
+    //collection of hunters, maybe just an array of hunters?
+    //linkedList of rooms
+    //shared evidence list that hunters access
+}HouseType;
+
+typedef struct Ghost{
+    GhostClass class;//the class of the ghost
+    RoomType *currRoom;//pointer to the current room the ghost is in
+    int boredom;//boredem counter, initialize it to 0
+}GhostType;
+
+typedef struct Hunter{
+    RoomType *currRoom;//pointer to the current room the hunter is in
+    EvidenceType evType;//type of evidence that the hunter is able to scan
+    char name[MAX_STR];//name of the hunter
+    //pointer to the shared evidence collection
+    int fear;//fear counter
+    int boredom;//boredom counter
+}HunterType;
+
+typedef struct Evidence{//Evidence collection
+    //EvidenceType
+    sem_t mutex;
+}EvidenceList;
+
 // Helper Utilies
 int randInt(int,int);        // Pseudo-random number generator function
 float randFloat(float, float);  // Pseudo-random float generator function
