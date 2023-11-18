@@ -44,7 +44,7 @@ typedef struct House{
 typedef struct Ghost{
     GhostClass class;//the class of the ghost
     RoomType *currRoom;//pointer to the current room the ghost is in
-    int boredom;//boredem counter, initialize it to 0
+    int boredom;//boredom counter, initialize it to 0
 }GhostType;
 
 typedef struct Hunter{
