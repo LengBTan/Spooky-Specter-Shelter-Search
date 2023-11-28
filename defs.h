@@ -90,6 +90,35 @@ enum GhostClass randomGhost();  // Return a randomly selected a ghost type
 void ghostToString(enum GhostClass, char*); // Convert a ghost type to a string, stored in output paremeter
 void evidenceToString(enum EvidenceType, char*); // Convert an evidence type to a string, stored in output parameter
 
+//Room functions
+void initRoom();
+void initRoomList();
+void addRoom();
+void cleanupRoomList();
+
+//House functions
+void initHouse();
+
+//Ghost functions
+void initGhost();
+
+//Hunter functions
+void initHunter();
+void initHunterList();
+void addHunter();//adds to the house's master list of hunters
+void cleanupHunterList();
+
+//Evidence functions
+void initEvidence();
+void initEvidenceList();
+void addEvidence();
+void cleanupEvidenceList();
+
+
+
+
+
+
 // Logging Utilities
 void l_hunterInit(char* name, enum EvidenceType equipment);
 void l_hunterMove(char* name, char* room);
