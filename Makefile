@@ -1,6 +1,7 @@
 OPT = -g #-Wall -Wextras -Werror #-g for debugging
 
-
+run: main.o utils.o logger.o house.o room.o hunter.o ghost.o evidence.o
+	gcc $(OPT) -o run main.o utils.o logger.o house.o room.o hunter.o ghost.o evidence.o
 
 main.o: main.c defs.h
 	gcc $(OPT) -c main.c
@@ -23,3 +24,8 @@ hunter.o: hunter.c defs.h
 ghost.o: ghost.c defs.h
 	gcc $(OPT) -c ghost.c
 
+evidence.o: evidence.c defs.h
+	gcc $(OPT) -c evidence.c
+
+clean:
+	rm -f *.o run
