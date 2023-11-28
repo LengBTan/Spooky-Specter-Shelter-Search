@@ -36,8 +36,8 @@ typedef struct Room{
 
 typedef struct RoomNode{//roomNodes for the RoomList
     RoomType *data;//points to the room
-    RoomNodeType *next;//points to the next node
-    RoomNodeType *prev;//points to the previous node
+    struct RoomNode *next;//points to the next node
+    struct RoomNode *prev;//points to the previous node
 }RoomNodeType;
 
 typedef struct RoomList{//doubly linked list, store the head and tail
@@ -67,10 +67,18 @@ typedef struct Hunter{
     int boredom;//boredom counter
 }HunterType;
 
-typedef struct Evidence{//Evidence collection
-    //EvidenceType
-    sem_t mutex;
-}EvidenceList;
+typedef struct EvidenceList{//Evidence collection
+    int size;//stores the size of the EvidenceList
+    sem_t mutex;//mutex for the collection
+    EvidenceNodeType *head;//pointer to the head of the linked list
+    EvidenceNodeType *tail;//pointer to the 
+}EvidenceListType;
+
+typedef struct EvidenceNode{
+    EvidenceType evidence;//data that the node is storing
+    struct EvidenceNode *next;//point to the next node
+    struct EvidenceNode *prev;//point to the previous node
+}EvidenceNodeType;
 
 // Helper Utilies
 int randInt(int,int);        // Pseudo-random number generator function
