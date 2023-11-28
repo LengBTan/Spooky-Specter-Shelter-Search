@@ -91,41 +91,46 @@ typedef struct EvidenceNode{
     struct EvidenceNode *prev;//point to the previous node
 }EvidenceNodeType;
 
-// Helper Utilies
-int randInt(int,int);        // Pseudo-random number generator function
-float randFloat(float, float);  // Pseudo-random float generator function
-enum GhostClass randomGhost();  // Return a randomly selected a ghost type
-void ghostToString(enum GhostClass, char*); // Convert a ghost type to a string, stored in output paremeter
-void evidenceToString(enum EvidenceType, char*); // Convert an evidence type to a string, stored in output parameter
-
 //Room functions
-void initRoom();
-void initRoomList();
-void addRoom();
-void cleanupRoomList();
+void initRoom(char *name, RoomType *room);
+void initRoomList(RoomListType *list);
+void addRoom(RoomListType *list, RoomType *room);//add room to the room list
+void cleanupRoomList(RoomListType *list);//used before the program quits
+void connectRooms(RoomType *room1, RoomType *room2);//connect the 2nd room to the first room
 
 //House functions
-void initHouse();
+void initHouse(HouseType *house);
+void cleanupHouse();//helper function to clean up the house before program ends?
+void populateRooms(HouseType *house);//populate the rooms in the house
 
 //Ghost functions
-void initGhost();
+void initGhost(GhostType *ghost, RoomType *startingRoom);
+void ghostAction();//helper function to choose a random action for the ghost to take
+void leaveEvidence();//ghost action to leave evidence behind
+void ghostMove();//ghost action to move to another room
 
 //Hunter functions
-void initHunter();
-void initHunterList();
-void addHunter();//adds to the house's master list of hunters
-void cleanupHunterList();
+void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, EvidenceType evType, EvidenceListType *evList);
+void initHunterList(HunterListType *list);
+void addHunter(HunterListType *list, HunterType *hunter);//adds to the house's master list of hunters
+void cleanupHunterList(HunterListType *list);
+void hunterAction();
 
 //Evidence functions
-void initEvidence();
-void initEvidenceList();
-void addEvidence();
+void initEvidence(EvidenceType evidence);//probably wont need?
+void initEvidenceList(EvidenceListType *list);
+void addEvidence(EvidenceListType *list, GhostType *ghost);
 void cleanupEvidenceList();
 
 
 
-
-
+// Helper Utilies
+int randInt(int,int);        // Pseudo-random number generator function
+float randFloat(float, float);  // Pseudo-random float generator function
+enum GhostClass randomGhost();  // Return a randomly selected a ghost type
+enum EvidenceType randomEvidence(); //return randomly selected evidence
+void ghostToString(enum GhostClass, char*); // Convert a ghost type to a string, stored in output paremeter
+void evidenceToString(enum EvidenceType, char*); // Convert an evidence type to a string, stored in output parameter
 
 // Logging Utilities
 void l_hunterInit(char* name, enum EvidenceType equipment);
