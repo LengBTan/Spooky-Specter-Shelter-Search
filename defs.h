@@ -28,7 +28,7 @@ enum LoggerDetails { LOG_FEAR, LOG_BORED, LOG_EVIDENCE, LOG_SUFFICIENT, LOG_INSU
 typedef struct Room{
     char name[MAX_STR];//name of the room
     RoomListType adjRooms;//linked list of adjacent rooms it is connected to
-    //linked list of evidence that ghost has left
+    EvidenceListType evList;//linked list of evidence that ghost has left
     //collection of hunters in the room (probably just use an array since # of hunters dont change during runtime?)
 
     GhostType *ghost;//pointer to the ghost that is in the room
@@ -48,9 +48,9 @@ typedef struct RoomList{//doubly linked list, store the head and tail
 }RoomListType;
 
 typedef struct House{
-    HunterListType hunterList;//collection of hunters, maybe just an array of hunters?
+    //collection of hunters, maybe just an array of hunters?
     RoomListType rooms;//linkedList of rooms
-    //shared evidence list that hunters access
+    EvidenceListType evList;//shared evidence list that hunters access
 }HouseType;
 
 typedef struct Ghost{
@@ -63,15 +63,12 @@ typedef struct Hunter{
     RoomType *currRoom;//pointer to the current room the hunter is in
     EvidenceType evType;//type of evidence that the hunter is able to scan
     char name[MAX_STR];//name of the hunter
-    EvidenceListType *sharedEvidence;//pointer to the shared evidence collection
+    EvidenceListType *evList;//pointer to the shared evidence collection
     int fear;//fear counter
     int boredom;//boredom counter
 }HunterType;
 
-typedef struct{//??
-    HunterType *elements;
-    int size;
-}HunterListType;
+//Hunter collection?
 
 typedef struct EvidenceList{//Evidence collection
     int size;//stores the size of the EvidenceList
