@@ -29,7 +29,8 @@ typedef struct Room{
     char name[MAX_STR];//name of the room
     RoomListType adjRooms;//linked list of adjacent rooms it is connected to
     //linked list of evidence that ghost has left
-    //collection of hunters in the room (probably just use an array since # of hunters dont change during runtime)
+    //collection of hunters in the room (probably just use an array since # of hunters dont change during runtime?)
+
     GhostType *ghost;//pointer to the ghost that is in the room
     sem_t mutex;//semaphore to prevent the room from being modified by multiple threads
 }RoomType;
@@ -47,7 +48,7 @@ typedef struct RoomList{//doubly linked list, store the head and tail
 }RoomListType;
 
 typedef struct House{
-    //collection of hunters, maybe just an array of hunters?
+    HunterListType hunterList;//collection of hunters, maybe just an array of hunters?
     RoomListType rooms;//linkedList of rooms
     //shared evidence list that hunters access
 }HouseType;
@@ -62,16 +63,21 @@ typedef struct Hunter{
     RoomType *currRoom;//pointer to the current room the hunter is in
     EvidenceType evType;//type of evidence that the hunter is able to scan
     char name[MAX_STR];//name of the hunter
-    //pointer to the shared evidence collection
+    EvidenceListType *sharedEvidence;//pointer to the shared evidence collection
     int fear;//fear counter
     int boredom;//boredom counter
 }HunterType;
+
+typedef struct{//??
+    HunterType *elements;
+    int size;
+}HunterListType;
 
 typedef struct EvidenceList{//Evidence collection
     int size;//stores the size of the EvidenceList
     sem_t mutex;//mutex for the collection
     EvidenceNodeType *head;//pointer to the head of the linked list
-    EvidenceNodeType *tail;//pointer to the 
+    EvidenceNodeType *tail;//pointer to the tail
 }EvidenceListType;
 
 typedef struct EvidenceNode{
