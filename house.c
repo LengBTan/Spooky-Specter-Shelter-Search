@@ -1,5 +1,13 @@
 #include "defs.h"
 
+//initialize each of the house's fields
+void initHouse(HouseType *house){
+    initHunterList(&house->HunterList);
+    initRoomList(&house->rooms);
+    initEvidenceList(&house->evList);
+}
+
+
 /*
     Dynamically allocates several rooms and populates the provided house.
     Note: You may modify this as long as room names and connections are maintained.
@@ -10,19 +18,46 @@ void populateRooms(HouseType* house) {
 
     // createRoom assumes that we dynamically allocate a room, initializes the values, and returns a RoomType*
     // create functions are pretty typical, but it means errors are harder to return aside from NULL
-    struct Room* van                = createRoom("Van");
-    struct Room* hallway            = createRoom("Hallway");
-    struct Room* master_bedroom     = createRoom("Master Bedroom");
-    struct Room* boys_bedroom       = createRoom("Boy's Bedroom");
-    struct Room* bathroom           = createRoom("Bathroom");
-    struct Room* basement           = createRoom("Basement");
-    struct Room* basement_hallway   = createRoom("Basement Hallway");
-    struct Room* right_storage_room = createRoom("Right Storage Room");
-    struct Room* left_storage_room  = createRoom("Left Storage Room");
-    struct Room* kitchen            = createRoom("Kitchen");
-    struct Room* living_room        = createRoom("Living Room");
-    struct Room* garage             = createRoom("Garage");
-    struct Room* utility_room       = createRoom("Utility Room");
+    // struct Room* van                = createRoom("Van");
+    // struct Room* hallway            = createRoom("Hallway");
+    // struct Room* master_bedroom     = createRoom("Master Bedroom");
+    // struct Room* boys_bedroom       = createRoom("Boy's Bedroom");
+    // struct Room* bathroom           = createRoom("Bathroom");
+    // struct Room* basement           = createRoom("Basement");
+    // struct Room* basement_hallway   = createRoom("Basement Hallway");
+    // struct Room* right_storage_room = createRoom("Right Storage Room");
+    // struct Room* left_storage_room  = createRoom("Left Storage Room");
+    // struct Room* kitchen            = createRoom("Kitchen");
+    // struct Room* living_room        = createRoom("Living Room");
+    // struct Room* garage             = createRoom("Garage");
+    // struct Room* utility_room       = createRoom("Utility Room");
+    RoomType* van;
+    RoomType* hallway;
+    RoomType* master_bedroom;
+    RoomType* boys_bedroom;
+    RoomType* bathroom;
+    RoomType* basement;
+    RoomType* basement_hallway;
+    RoomType* right_storage_room;
+    RoomType* left_storage_room;
+    RoomType* kitchen;
+    RoomType* living_room;
+    RoomType* garage;
+    RoomType* utility_room;
+    initRoom("Van", van);
+    initRoom("Hallway", hallway);
+    initRoom("Master Bedroom", master_bedroom);
+    initRoom("Boy's Bedroom", boys_bedroom);
+    initRoom("Bathroom", bathroom);
+    initRoom("Basement", basement);
+    initRoom("Basement Hallway", basement_hallway);
+    initRoom("Right Storage Room", right_storage_room);
+    initRoom("Left Storage Room", left_storage_room);
+    initRoom("Kitchen", kitchen);
+    initRoom("Living Room", living_room);
+    initRoom("Garage", garage);
+    initRoom("Utility Room", utility_room);
+
 
     // This adds each room to each other's room lists
     // All rooms are two-way connections
