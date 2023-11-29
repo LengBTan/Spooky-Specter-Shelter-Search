@@ -38,7 +38,7 @@ void cleanupHunterList(HunterListType *list) {
     HunterNodeType *currNode = list->head;
     HunterNodeType *prevNode;
 
-    while (currNode != NULL) {
+    while (currNode != NULL) {//traverse through the list until it gets to the end of the list
         prevNode = currNode;
         currNode = currNode->next;
         //free(prevNode->data); //freeing the data? idk
