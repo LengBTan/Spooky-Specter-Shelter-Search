@@ -7,6 +7,12 @@ void initHouse(HouseType *house){
     initEvidenceList(&house->evList);
 }
 
+void cleanupHouse(HouseType *house){
+    cleanupHunterList(&house->HunterList);
+    cleanupRoomData(&house->rooms);
+    cleanupRoomList(&house->rooms);
+    cleanupEvidenceList(&house->evList);
+}
 
 /*
     Dynamically allocates several rooms and populates the provided house.
