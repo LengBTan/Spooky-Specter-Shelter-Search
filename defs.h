@@ -128,7 +128,6 @@ void cleanupEvidenceList();
 int randInt(int,int);        // Pseudo-random number generator function
 float randFloat(float, float);  // Pseudo-random float generator function
 enum GhostClass randomGhost();  // Return a randomly selected a ghost type
-enum EvidenceType randomEvidence(); //return randomly selected evidence
 void ghostToString(enum GhostClass, char*); // Convert a ghost type to a string, stored in output paremeter
 void evidenceToString(enum EvidenceType, char*); // Convert an evidence type to a string, stored in output parameter
 
