@@ -13,11 +13,7 @@ void addEvidence(EvidenceListType *list, GhostType *ghost){
     EvidenceNodeType *newNode;
     newNode = malloc(sizeof(EvidenceNodeType));
 
-    //newNode->evidence;
-
-    //evidence depends on the ghost type
-    //type of evidence left is random
-    int rng = randInt(0,1);
+    int rng = randInt(0,1);//evidence depends on the ghost type and is random
     switch (ghost->class){
     case POLTERGEIST://EMF, TEMPERATURE, FINGERPRINTS
         if(rng == 0){
@@ -64,5 +60,26 @@ void addEvidence(EvidenceListType *list, GhostType *ghost){
         }
         break;
     }
-    
+
+    newNode->next = NULL;
+    newNode->prev = list->tail;
+    //add to the tail of the list
+    if(list->head == NULL){//list is empty
+        list->head = newNode;
+    }
+    else{//list isnt empty, just add to the tail
+        list->tail->next = newNode;
+    }
+    list->tail = newNode;//point the tail to the newly added node
+}
+
+void cleanupEvidenceList(EvidenceListType *list){
+    EvidenceNodeType *currNode = list->head;
+    EvidenceNodeType *prevNode;
+
+    while (currNode != NULL) {//traverse through the list until it gets to the end of the list
+        prevNode = currNode;//set the previous node to the current node
+        currNode = currNode->next;//set the current node to the next node
+        free(prevNode);//free the prevNode
+    }
 }
