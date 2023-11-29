@@ -1,14 +1,26 @@
 #include "defs.h"
 
-void initRoom(char *name, RoomType *room) {
-    strcpy(room->name, name); //sets the room name
+void initRoom(char *name, RoomType **room) {
+    strcpy((*room)->name, name); //sets the room name
+    initRoomList(&(*room)->adjRooms);//initialize the roomList in room
+    initEvidenceList(&(*room)->evList);//initialize the evidence list in the room
+    initHunterList(&(*room)->hunterList);//collection of hunters in the room
+    (*room)->ghost = NULL;
 
-    initRoomList(&room->adjRooms);//initialize the roomList in room
-    initEvidenceList(&room->evList);//initialize the evidence list in the room
-    initHunterList(&room->hunterList);//collection of hunters in the room
-    room->ghost = NULL;
+    sem_init(&((*room)->mutex), 0, 1); //initializes the semaphore
+}
 
-    sem_init(&(room->mutex), 0, 1); //initializes the semaphore
+RoomType* createRoom(char *name){
+    RoomType *room;//dynamically allocate the room
+    room = malloc(sizeof(RoomType));//dynamically allocate the room
+
+    //initialize its values
+    strcpy(room->name, name);
+    initRoomList(&room->adjRooms);
+    initEvidenceList(&room->evList);
+    initHunterList(&room->hunterList);
+
+    return room;//return the pointer of this room
 }
 
 void initRoomList(RoomListType *list) {
@@ -50,5 +62,7 @@ void cleanupRoomList(RoomListType *list) {
 }
 
 void connectRooms(RoomType *room1, RoomType *room2){
+    //rooms are 2 way connections
     addRoom(&room1->adjRooms, room2);//add room2 to the roomList in room1
+    addRoom(&room2->adjRooms, room1);//add room1 to the roomList in room2
 }
