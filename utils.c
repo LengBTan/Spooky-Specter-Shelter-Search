@@ -37,13 +37,6 @@ enum GhostClass randomGhost() {
     return (enum GhostClass) randInt(0, GHOST_COUNT);
 }
 
-/* 
-    Returns a random enum EvidenceType.
-*/
-enum EvidenceType randomEvidence() {
-    return (enum EvidenceType) randInt(0, EV_COUNT);
-}
-
 /*
     Returns the string representation of the given enum EvidenceType.
         in: type - the enum EvidenceType to convert
