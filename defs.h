@@ -117,7 +117,7 @@ RoomType* chooseStartingRoom(RoomListType *list);
 void cleanupRoomData(RoomListType *list);//cleanup the room data
 void cleanupRoomAdj(RoomType *room);//free the adjacent rooms of room
 void cleanupRoomList(RoomListType *list);//used before the program quits
-void cleanupRoomEvidence();
+void cleanupRoomEvidence(RoomListType *List);//cleanup the evidence left in the current room
 
 void printRoomAdj(RoomType *room);
 void printRoomEv(RoomType *room);
@@ -133,7 +133,8 @@ void populateRooms(HouseType *house);//populate the rooms in the house
 //Ghost functions
 void initGhost(GhostType *ghost, RoomType *startingRoom);
 
-void ghostAction();//helper function to choose a random action for the ghost to take
+int checkHunter(RoomType *room);//helper function that checks if a hunter is in the room
+void ghostAction(GhostType *ghost);//helper function to choose a random action for the ghost to take
 void leaveEvidence();//ghost action to leave evidence behind
 void ghostMove();//ghost action to move to another room
 
