@@ -63,5 +63,6 @@ void addEvidence(EvidenceListType *list, GhostType *ghost){
             newNode->evidence = 3;//SOUND
         }
         break;
-
+    }
+    
 }
