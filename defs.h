@@ -120,7 +120,7 @@ void hunterAction();
 void initEvidence(EvidenceType evidence);//probably wont need?
 void initEvidenceList(EvidenceListType *list);
 void addEvidence(EvidenceListType *list, GhostType *ghost);
-void cleanupEvidenceList();
+void cleanupEvidenceList(EvidenceListType *list);
 
 
 
