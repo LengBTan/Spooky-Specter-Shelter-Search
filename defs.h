@@ -113,6 +113,9 @@ void addRoom(RoomListType *list, RoomType *room);//add room to the room list
 void cleanupRoomList(RoomListType *list);//used before the program quits
 void connectRooms(RoomType *room1, RoomType *room2);//connect the 2nd room to the first room
 
+void printRoom(RoomType *room);
+void printRoomList(RoomListType *list);
+
 //House functions
 void initHouse(HouseType *house);
 void cleanupHouse();//helper function to clean up the house before program ends?
