@@ -41,11 +41,11 @@ void cleanupRoomList(RoomListType *list) {
     RoomNodeType *currNode = list->head;
     RoomNodeType *prevNode;
 
-    while (currNode != NULL) {
-        prevNode = currNode;
-        currNode = currNode->next;
+    while (currNode != NULL) {//traverse through the list until it gets to the end of the list
+        prevNode = currNode;//set the previous node to the current node
+        currNode = currNode->next;//set the current node to the next node
         //free(prevNode->data); //freeing the data? idk
-        free(prevNode);
+        free(prevNode);//free the prevNode
     }
 }
 
