@@ -12,18 +12,56 @@ void initEvidenceList(EvidenceListType *list){
 void addEvidence(EvidenceListType *list, GhostType *ghost){
     EvidenceNodeType *newNode;
     newNode = malloc(sizeof(EvidenceNodeType));
-    
+
+    //newNode->evidence;
 
     //evidence depends on the ghost type
     //type of evidence left is random
-    // switch (expression)
-    // {
-    // case /* constant-expression */:
-    //     /* code */
-    //     break;
-    
-    // default:
-    //     break;
-    // }
+    int rng = randInt(0,1);
+    switch (ghost->class){
+    case POLTERGEIST://EMF, TEMPERATURE, FINGERPRINTS
+        if(rng == 0){
+            newNode->evidence = 0;//EMF
+        }
+        else if(rng == 1){
+            newNode->evidence = 1;//TEMP
+        }
+        else if(rng == 2){
+            newNode->evidence = 2;//FINGERPRINTS
+        }
+        break;
+    case BANSHEE://EMF, TEMPERATURE, SOUND
+        if(rng == 0){
+            newNode->evidence = 0;//EMF
+        }
+        else if(rng == 1){
+            newNode->evidence = 1;//TEMP
+        }
+        else if(rng == 2){
+            newNode->evidence = 3;//SOUND
+        }
+        break;
+    case BULLIES://EMF, FINGERPRINTS, and SOUND
+        if(rng == 0){
+            newNode->evidence = 0;//EMF
+        }
+        else if(rng == 1){
+            newNode->evidence = 2;//FINGERPRINTS
+        }
+        else if(rng == 2){
+            newNode->evidence = 3;//SOUND
+        }
+        break;
+    case PHANTOM://TEMPERATURE, FINGERPRINTS, and SOUND
+        if(rng == 0){
+            newNode->evidence = 1;//TEMP
+        }
+        else if(rng == 1){
+            newNode->evidence = 2;//FINGERPRINTS
+        }
+        else if(rng == 2){
+            newNode->evidence = 3;//SOUND
+        }
+        break;
 
 }
