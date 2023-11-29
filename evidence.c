@@ -13,7 +13,7 @@ void addEvidence(EvidenceListType *list, GhostType *ghost){
     EvidenceNodeType *newNode;
     newNode = malloc(sizeof(EvidenceNodeType));
 
-    int rng = randInt(0,1);//evidence depends on the ghost type and is random
+    int rng = randInt(0,2);//evidence depends on the ghost type and is random
     switch (ghost->class){
     case POLTERGEIST://EMF, TEMPERATURE, FINGERPRINTS
         if(rng == 0){
