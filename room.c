@@ -66,3 +66,71 @@ void connectRooms(RoomType *room1, RoomType *room2){
     addRoom(&room1->adjRooms, room2);//add room2 to the roomList in room1
     addRoom(&room2->adjRooms, room1);//add room1 to the roomList in room2
 }
+
+void printRoomAdj(RoomType *room) {
+    RoomNodeType *newNode = room->adjRooms.head;
+	RoomNodeType *prev;
+    printf("Adjacent Rooms:\n");
+	while (newNode != NULL){
+		prev = newNode;
+		printf("%s\n", prev->data->name);
+		newNode = newNode->next;
+	}
+}
+
+void printRoomEv(RoomType *room) {
+    EvidenceNodeType *newNode = room->evList.head;
+	EvidenceNodeType *prev;
+    printf("Evidence in Room:\n");
+	while (newNode != NULL){
+		prev = newNode;
+        enum EvidenceType evidence = prev->evidence;
+
+        if (evidence == 0) {
+            printf("EMF\n");
+        }
+        else if (evidence == 1) {
+            printf("TEMPERATURE\n");
+        }
+        else if (evidence == 2) {
+            printf("FINGERPRINTS\n");
+        }
+        else if (evidence == 3) {
+            printf("SOUND\n");
+        }
+		
+		newNode = newNode->next;
+	}
+}
+
+void printRoomHunter(RoomType *room) {
+    HunterNodeType *newNode = room->hunterList.head;
+	HunterNodeType *prev;
+    printf("Hunters in Room:\n");
+	while (newNode != NULL){
+		prev = newNode;
+		printf("%s\n", prev->data->name);
+		newNode = newNode->next;
+	}
+}
+
+
+
+void printRoom(RoomType *room){
+    printf("Room: %s\n", room->name);
+    printRoomAdj(room);
+    printRoomEv(room);
+    printRoomHunter(room);
+    //insert a print ghost function here
+    printf("-----------------\n");
+}
+
+void printRoomList(RoomListType *list){
+    RoomNodeType *newNode = list->head;
+	RoomNodeType *prev;
+	while (newNode != NULL){
+		prev = newNode;
+		printRoom(prev->data);
+		newNode = newNode->next;
+	}
+}
