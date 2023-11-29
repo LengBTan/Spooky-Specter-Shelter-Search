@@ -16,6 +16,7 @@
 #define NUM_HUNTERS     4
 #define FEAR_MAX        10
 #define LOGGING         C_TRUE
+#define NUM_ROOMS       12
 
 typedef enum EvidenceType EvidenceType;
 typedef enum GhostClass GhostClass;
@@ -110,19 +111,28 @@ void initRoom(char *name, RoomType **room);//not needed?
 RoomType* createRoom(char *name);
 void initRoomList(RoomListType *list);
 void addRoom(RoomListType *list, RoomType *room);//add room to the room list
-void cleanupRoomList(RoomListType *list);//used before the program quits
 void connectRooms(RoomType *room1, RoomType *room2);//connect the 2nd room to the first room
+RoomType* chooseStartingRoom(RoomListType *list);
 
+void cleanupRoomData(RoomListType *list);//cleanup the room data
+void cleanupRoomAdj(RoomType *room);//free the adjacent rooms of room
+void cleanupRoomList(RoomListType *list);//used before the program quits
+void cleanupRoomEvidence();
+
+void printRoomAdj(RoomType *room);
+void printRoomEv(RoomType *room);
+void printRoomHunter(RoomType *room);
 void printRoom(RoomType *room);
 void printRoomList(RoomListType *list);
 
 //House functions
 void initHouse(HouseType *house);
-void cleanupHouse();//helper function to clean up the house before program ends?
+void cleanupHouse(HouseType *house);//cleanup the house before the program ends
 void populateRooms(HouseType *house);//populate the rooms in the house
 
 //Ghost functions
 void initGhost(GhostType *ghost, RoomType *startingRoom);
+
 void ghostAction();//helper function to choose a random action for the ghost to take
 void leaveEvidence();//ghost action to leave evidence behind
 void ghostMove();//ghost action to move to another room
