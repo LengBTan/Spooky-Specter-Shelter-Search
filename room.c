@@ -56,7 +56,8 @@ void cleanupRoomData(RoomListType *list){
     while (currNode != NULL) {//traverse through the list until it gets to the end of the list
         prevNode = currNode;//set the previous node to the current node
         currNode = currNode->next;//set the current node to the next node
-        cleanupRoomAdj(prevNode->data);
+        cleanupRoomAdj(prevNode->data);//free the adjacent rooms in the room
+        cleanupEvidenceList(&prevNode->data->evList);//free the EvidenceList in the room 
         free(prevNode->data); //free the data
     }
 }
@@ -80,7 +81,6 @@ void cleanupRoomList(RoomListType *list) {
     while (currNode != NULL) {//traverse through the list until it gets to the end of the list
         prevNode = currNode;//set the previous node to the current node
         currNode = currNode->next;//set the current node to the next node
-        //free(prevNode->data); //freeing the data? idk
         free(prevNode);//free the prevNode
     }
 }
