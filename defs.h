@@ -24,72 +24,86 @@ enum EvidenceType { EMF, TEMPERATURE, FINGERPRINTS, SOUND, EV_COUNT, EV_UNKNOWN 
 enum GhostClass { POLTERGEIST, BANSHEE, BULLIES, PHANTOM, GHOST_COUNT, GH_UNKNOWN };
 enum LoggerDetails { LOG_FEAR, LOG_BORED, LOG_EVIDENCE, LOG_SUFFICIENT, LOG_INSUFFICIENT, LOG_UNKNOWN };
 
+typedef struct Room RoomType;
+typedef struct RoomNode RoomNodeType;
+typedef struct RoomList RoomListType;
+typedef struct House HouseType;
+typedef struct Ghost GhostType;
+typedef struct Hunter HunterType;
+typedef struct HunterNode HunterNodeType;
+typedef struct HunterList HunterListType;
+typedef struct EvidenceList EvidenceListType;
+typedef struct EvidenceNode EvidenceNodeType;
+
 //structs
-typedef struct Room{
-    char name[MAX_STR];//name of the room
-    RoomListType adjRooms;//linked list of adjacent rooms it is connected to
-    EvidenceListType evList;//linked list of evidence that ghost has left
-    HunterListType hunterList;//collection of hunters in the room
-    GhostType *ghost;//pointer to the ghost that is in the room
-    sem_t mutex;//semaphore to prevent the room from being modified by multiple threads
-}RoomType;
+struct EvidenceList{//Evidence collection
+    int size;//stores the size of the EvidenceList
+    sem_t mutex;//mutex for the collection
+    EvidenceNodeType *head;//pointer to the head of the linked list
+    EvidenceNodeType *tail;//pointer to the tail
+};
 
-typedef struct RoomNode{//roomNodes for the RoomList
-    RoomType *data;//points to the room
-    struct RoomNode *next;//points to the next node
-    struct RoomNode *prev;//points to the previous node
-}RoomNodeType;
+struct EvidenceNode{
+    EvidenceType evidence;//data that the node is storing
+    struct EvidenceNode *next;//point to the next node
+    struct EvidenceNode *prev;//point to the previous node
+};
 
-typedef struct RoomList{//doubly linked list, store the head and tail
-    int size;//stores the size of the room list
-    RoomNodeType *head;
-    RoomNodeType *tail;
-}RoomListType;
-
-typedef struct House{
-    HunterListType HunterList;//collection of hunters, maybe just an array of hunters?
-    RoomListType rooms;//linkedList of rooms
-    EvidenceListType evList;//shared evidence list that hunters access
-}HouseType;
-
-typedef struct Ghost{
-    GhostClass class;//the class of the ghost
-    RoomType *currRoom;//pointer to the current room the ghost is in
-    int boredom;//boredom counter, initialize it to 0
-}GhostType;
-
-typedef struct Hunter{
+struct Hunter{
     RoomType *currRoom;//pointer to the current room the hunter is in
     EvidenceType evType;//type of evidence that the hunter is able to scan
     char name[MAX_STR];//name of the hunter
     EvidenceListType *evList;//pointer to the shared evidence collection
     int fear;//fear counter
     int boredom;//boredom counter
-}HunterType;
+};
 
-typedef struct HunterNode{
+struct HunterNode{
     HunterType *data;
     struct HunterNode *next;
     struct HunterNode *prev;
-}HunterNodeType;
+};
 
-typedef struct HunterList{
+struct HunterList{
     HunterNodeType *head;
     HunterNodeType *tail;
-}HunterListType;
+};
 
-typedef struct EvidenceList{//Evidence collection
-    int size;//stores the size of the EvidenceList
-    sem_t mutex;//mutex for the collection
-    EvidenceNodeType *head;//pointer to the head of the linked list
-    EvidenceNodeType *tail;//pointer to the tail
-}EvidenceListType;
+struct RoomNode{//roomNodes for the RoomList
+    RoomType *data;//points to the room
+    RoomNodeType *next;//points to the next node
+    RoomNodeType *prev;//points to the previous node
+};
 
-typedef struct EvidenceNode{
-    EvidenceType evidence;//data that the node is storing
-    struct EvidenceNode *next;//point to the next node
-    struct EvidenceNode *prev;//point to the previous node
-}EvidenceNodeType;
+struct RoomList{//doubly linked list, store the head and tail
+    int size;//stores the size of the room list
+    RoomNodeType *head;
+    RoomNodeType *tail;
+};
+
+struct Room{
+    char name[MAX_STR];//name of the room
+    RoomListType adjRooms;//linked list of adjacent rooms it is connected to
+    EvidenceListType evList;//linked list of evidence that ghost has left
+    HunterListType hunterList;//collection of hunters in the room
+    GhostType *ghost;//pointer to the ghost that is in the room
+    sem_t mutex;//semaphore to prevent the room from being modified by multiple threads
+};
+
+struct House{
+    HunterListType HunterList;//collection of hunters, maybe just an array of hunters?
+    RoomListType rooms;//linkedList of rooms
+    EvidenceListType evList;//shared evidence list that hunters access
+};
+
+struct Ghost{
+    GhostClass class;//the class of the ghost
+    RoomType *currRoom;//pointer to the current room the ghost is in
+    int boredom;//boredom counter, initialize it to 0
+};
+
+
+
 
 //Room functions
 void initRoom(char *name, RoomType *room);
