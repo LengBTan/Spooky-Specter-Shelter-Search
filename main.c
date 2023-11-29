@@ -9,6 +9,8 @@ int main(){
     initHouse(&house);
     populateRooms(&house);
 
+    printRoomList(&house.rooms);
+    
     return 0;
 }
 
