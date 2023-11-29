@@ -8,8 +8,14 @@ int main(){
     HouseType house;
     initHouse(&house);
     populateRooms(&house);
-
     printRoomList(&house.rooms);
+    
+    GhostType ghost;
+
+    initGhost(&ghost, chooseStartingRoom(&house.rooms));
+    //printf("GHOST STARTING CLASS: %d ", ghost.class);
+
+    cleanupHouse(&house);
     
     return 0;
 }
