@@ -11,12 +11,14 @@ int main(){
     printRoomList(&house.rooms);
     
     GhostType ghost;
-
     initGhost(&ghost, chooseStartingRoom(&house.rooms));
     //printf("GHOST STARTING CLASS: %d ", ghost.class);
-
-    cleanupHouse(&house);
+    addEvidence(&house.rooms.head->data->evList, &ghost);
+    printf("EVIDENCE IN THE ROOM: %d", house.rooms.head->data->evList.head->evidence);
     
+    
+    
+    cleanupHouse(&house);
     return 0;
 }
 
