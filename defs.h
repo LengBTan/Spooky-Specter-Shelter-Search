@@ -106,7 +106,8 @@ struct Ghost{
 
 
 //Room functions
-void initRoom(char *name, RoomType *room);
+void initRoom(char *name, RoomType **room);//not needed?
+RoomType* createRoom(char *name);
 void initRoomList(RoomListType *list);
 void addRoom(RoomListType *list, RoomType *room);//add room to the room list
 void cleanupRoomList(RoomListType *list);//used before the program quits
