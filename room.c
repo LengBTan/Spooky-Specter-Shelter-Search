@@ -49,6 +49,30 @@ void addRoom(RoomListType *list, RoomType *room) {
     list->size++;
 }
 
+void cleanupRoomData(RoomListType *list){
+    RoomNodeType *currNode = list->head;
+    RoomNodeType *prevNode;
+
+    while (currNode != NULL) {//traverse through the list until it gets to the end of the list
+        prevNode = currNode;//set the previous node to the current node
+        currNode = currNode->next;//set the current node to the next node
+        cleanupRoomAdj(prevNode->data);
+        free(prevNode->data); //free the data
+    }
+}
+
+void cleanupRoomAdj(RoomType *room){
+    RoomNodeType *currNode;
+    RoomNodeType *nextNode;
+
+    currNode = room->adjRooms.head;
+    while(currNode != NULL){
+        nextNode = currNode->next;
+        free(currNode);//free the node
+        currNode = nextNode;
+    }
+}
+
 void cleanupRoomList(RoomListType *list) {
     RoomNodeType *currNode = list->head;
     RoomNodeType *prevNode;
@@ -60,6 +84,8 @@ void cleanupRoomList(RoomListType *list) {
         free(prevNode);//free the prevNode
     }
 }
+
+
 
 void connectRooms(RoomType *room1, RoomType *room2){
     //rooms are 2 way connections
@@ -73,7 +99,8 @@ void printRoomAdj(RoomType *room) {
     printf("Adjacent Rooms:\n");
 	while (newNode != NULL){
 		prev = newNode;
-		printf("%s\n", prev->data->name);
+		printf("    %s ", prev->data->name);
+        printf("ROOM POINTER: %p\n", prev->data);//just to check its address in memory, no duplicate rooms
 		newNode = newNode->next;
 	}
 }
@@ -117,7 +144,8 @@ void printRoomHunter(RoomType *room) {
 
 
 void printRoom(RoomType *room){
-    printf("Room: %s\n", room->name);
+    printf("    Room: %s\n", room->name);
+    printf("ROOM POINTER: %p\n", room);//just to check its address in memory, no duplicate rooms
     printRoomAdj(room);
     printRoomEv(room);
     printRoomHunter(room);
@@ -133,4 +161,21 @@ void printRoomList(RoomListType *list){
 		printRoom(prev->data);
 		newNode = newNode->next;
 	}
+}
+
+RoomType* chooseStartingRoom(RoomListType *list){
+    int rng = randInt(1,NUM_ROOMS);//first room (room 0) is the van
+    int index = 0;
+    RoomNodeType *currNode;
+    RoomNodeType *nextNode;
+    RoomType* startingRoom;
+    currNode = list->head;
+    while(currNode != NULL && index <= rng){//traverse through the list of houses
+        nextNode = currNode->next;
+        startingRoom = currNode->data;
+        currNode = nextNode;
+        index++;
+    }
+
+    return startingRoom;
 }
