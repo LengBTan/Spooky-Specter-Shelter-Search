@@ -8,6 +8,9 @@ void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, Evidence
     hunter->evList = evList;
     hunter->fear = 0;
     hunter->boredom = 0;
+
+    addHunter(&startingRoom->hunterList, hunter);//aadd the hunter to the starting room list
+    l_hunterInit(name, evType);
 }
 
 void initHunterList(HunterListType *list) {
