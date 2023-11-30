@@ -17,11 +17,17 @@ int main(){
     // printf("EVIDENCE IN THE ROOM: %d", house.rooms.head->data->evList.head->evidence);
     
     // HunterType h1;
-    // initHunter("bob", &h1, house.rooms.head->data, 0, &house.evList);
+    // initHunter("joel", &h1, house.rooms.head->data, 0, &house.evList);
+    // HunterType h2;
+    // initHunter("jeff", &h2, house.rooms.head->data, 1, &house.evList);
+    // HunterType h3;
+    // initHunter("john", &h3, house.rooms.head->data, 2, &house.evList);
+    // HunterType h4;
+    // initHunter("joe", &h4, house.rooms.head->data, 3, &house.evList);
 
     ghostAction(&ghost);
     
-    //printRoomList(&house.rooms);
+    printRoomList(&house.rooms);
     cleanupHouse(&house);
     return 0;
 }
