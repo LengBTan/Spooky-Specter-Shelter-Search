@@ -21,6 +21,8 @@ void ghostAction(GhostType *ghost) {//choose a random ghost action
     if (ghost->boredom >= BOREDOM_MAX) {
         // something happens here with the thread
         //pthread_exit()
+        //log the reason for leaving, LOG_BORED every time
+        //l_ghostExit(enum LoggerDetails reason);
         return;
     }
 
