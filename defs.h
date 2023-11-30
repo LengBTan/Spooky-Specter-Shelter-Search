@@ -133,10 +133,9 @@ void populateRooms(HouseType *house);//populate the rooms in the house
 //Ghost functions
 void initGhost(GhostType *ghost, RoomType *startingRoom);
 
-int checkHunter(RoomType *room);//helper function that checks if a hunter is in the room
+int checkHunter(GhostType *ghost);//helper function that checks if a hunter is in the room
 void ghostAction(GhostType *ghost);//helper function to choose a random action for the ghost to take
-void leaveEvidence();//ghost action to leave evidence behind
-void ghostMove();//ghost action to move to another room
+void ghostMove(GhostType *ghost);//ghost action to move to another room
 
 //Hunter functions
 void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, EvidenceType evType, EvidenceListType *evList);
@@ -146,9 +145,10 @@ void cleanupHunterList(HunterListType *list);
 void hunterAction();
 
 //Evidence functions
-void initEvidence(EvidenceType evidence);//probably wont need?
+void initEvidence(EvidenceType evidence);//probably wont need? delete this
 void initEvidenceList(EvidenceListType *list);
-void addEvidence(EvidenceListType *list, GhostType *ghost);
+void addEvidence(EvidenceListType *list, EvidenceType ev);//for hunters to add to the list
+void leaveEvidence(EvidenceListType *list, GhostType *ghost);//ghost action to leave evidence behind
 void cleanupEvidenceList(EvidenceListType *list);
 
 
