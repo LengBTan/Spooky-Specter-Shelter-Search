@@ -48,3 +48,50 @@ void cleanupHunterList(HunterListType *list) {
         free(prevNode);
     }
 }
+
+void hunterAction(HunterType *hunter, GhostType *ghost){
+    //check if the ghost is in the same room as the hunter
+    if(hunter->currRoom == ghost->currRoom){
+        hunter->fear++;
+        hunter->boredom = 0;
+    }
+    else{
+        hunter->boredom++;
+    }
+
+    if(hunter->fear >= FEAR_MAX || hunter->boredom >= BOREDOM_MAX){
+        //exit the thread
+        //pthread_exit()
+        //log the reason, either LOG_BORED, LOG_FEAR, or LOG_EVIDENCE
+        //l_hunterExit(char* name, enum LoggerDetails reason);
+        return;
+    }
+
+    int rng;
+    rng = randInt(0,3);//min = 0, max-1 = 2
+
+    if(rng == 0){//move to a random connected room
+        hunterMove(hunter);
+    }
+    else if(rng == 1){//collect evidence in a room if evidence is in it & equipment matches
+        hunterCollect(hunter);
+    }
+    else if(rng == 2){//review evidence that is shared
+        hunterReview(hunter);
+    }
+}
+
+void hunterMove(HunterType *hunter){
+    //log the move
+    //l_hunterMove(char* name, char* room);
+}
+
+void hunterCollect(HunterType *hunter){
+    //log the collect
+    //l_hunterCollect(char* name, enum EvidenceType evidence, char* room);
+}
+
+void hunterReview(HunterType *hunter){
+    //log the review
+    //l_hunterReview(char* name, enum LoggerDetails reviewResult);
+}
