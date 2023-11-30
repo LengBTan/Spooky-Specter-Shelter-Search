@@ -7,25 +7,34 @@ void initGhost(GhostType *ghost, RoomType *startingRoom){
     l_ghostInit(ghost->class, startingRoom->name);
 }
 
-void ghostAction(GhostType *ghost) {//helper function to choose the action that the ghost performs
+void ghostAction(GhostType *ghost) {//choose a random ghost action
+    int rng;
+    if(checkHunter(ghost)){//1 for hunter in room, 0 for no hunter in room
+        rng = randInt(0,1);//hunter is in the room, only either leave evidence or do nothing
+        ghost->boredom = 0;//if hunter is present, ghost boredom reset
+    }
+    else{
+        rng = randInt(0,3);//hunter isnt in the room, perform any of the 3 actions
+        ghost->boredom++;
+    }
 
-    //call a helper function to check if the ghost is in a room with a hunter to increment its boredom counter
-    
-    int rng = randInt(0,2);
+    if (ghost->boredom >= BOREDOM_MAX) {
+        // something happens here with the thread
+        //pthread_exit()
+        return;
+    }
+
     if (rng == 0) {// ghost leaves evidence
         leaveEvidence(&(ghost->currRoom->evList), ghost);
     }
-    else if (rng == 1) {// ghost moves to adjacent room only if hunter is not there
+    //RNG = 1 does nothing
+    else if (rng == 2) {//ghost moves to adjacent room only if hunter is not in the same room 
         ghostMove(ghost);
-    }
-    else if (rng == 2) {
-        printf("ghost does nothing\n");
-        // do nothing
     }
 }
 
 void ghostMove(GhostType *ghost){
-    int roomNum = randInt(0, ghost->currRoom->adjRooms.size - 1); // randomly selects a room based on number of adjacent rooms
+    int roomNum = randInt(0, ghost->currRoom->adjRooms.size); // randomly selects a room based on number of adjacent rooms
     int index = 0;
     RoomNodeType *currNode;
     RoomNodeType *nextNode;
@@ -38,24 +47,15 @@ void ghostMove(GhostType *ghost){
         index++;
     }
 
-    // checks if there is a hunter present in room, if no hunter, move to new room
-    if (selectRoom->hunterList.head == NULL) {
-        ghost->currRoom = selectRoom;
-        l_ghostMove(selectRoom->name);
-    }
-    // ghost does something else if there is a hunter in the selected room
-    else {
-        int rng1 = randInt(0, 1);
-        if (rng1 == 0) {
-            leaveEvidence(&(ghost->currRoom->evList), ghost); // ghost adds evidence 
-        }
-        else {
-            // do nothing
-        }
-    }
+    ghost->currRoom = selectRoom;
+    l_ghostMove(selectRoom->name);
 }
 
-int checkHunter(GhostType *ghost){
-
+char checkHunter(GhostType *ghost){
+    if(ghost->currRoom->hunterList.head != NULL){//there is a hunter in the room
+        return 1;
+    }
+    else{
+        return 0;
+    }
 }
-//random ghost actions
