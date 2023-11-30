@@ -117,7 +117,6 @@ RoomType* chooseStartingRoom(RoomListType *list);
 void cleanupRoomData(RoomListType *list);//cleanup the room data
 void cleanupRoomAdj(RoomType *room);//free the adjacent rooms of room
 void cleanupRoomList(RoomListType *list);//used before the program quits
-void cleanupRoomEvidence(RoomListType *List);//cleanup the evidence left in the current room
 
 void printRoomAdj(RoomType *room);
 void printRoomEv(RoomType *room);
@@ -142,10 +141,12 @@ void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, Evidence
 void initHunterList(HunterListType *list);
 void addHunter(HunterListType *list, HunterType *hunter);//adds to the house's master list of hunters
 void cleanupHunterList(HunterListType *list);
-void hunterAction();
+void hunterAction(HunterType *hunter);
+void hunterMove(HunterType *hunter);//move to random connected room
+void hunterCollect(HunterType *hunter);//collect evidence in the room
+void hunterReview(HunterType *hunter);//review evidence
 
 //Evidence functions
-void initEvidence(EvidenceType evidence);//probably wont need? delete this
 void initEvidenceList(EvidenceListType *list);
 void addEvidence(EvidenceListType *list, EvidenceType ev);//for hunters to add to the list
 void leaveEvidence(EvidenceListType *list, GhostType *ghost);//ghost action to leave evidence behind
