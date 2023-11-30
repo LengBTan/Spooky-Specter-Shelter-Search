@@ -8,16 +8,20 @@ int main(){
     HouseType house;
     initHouse(&house);
     populateRooms(&house);
-    printRoomList(&house.rooms);
+    
     
     GhostType ghost;
     initGhost(&ghost, chooseStartingRoom(&house.rooms));
     //printf("GHOST STARTING CLASS: %d ", ghost.class);
-    addEvidence(&house.rooms.head->data->evList, &ghost);
-    printf("EVIDENCE IN THE ROOM: %d", house.rooms.head->data->evList.head->evidence);
+    // addEvidence(&house.rooms.head->data->evList, 0);
+    // printf("EVIDENCE IN THE ROOM: %d", house.rooms.head->data->evList.head->evidence);
     
+    // HunterType h1;
+    // initHunter("bob", &h1, house.rooms.head->data, 0, &house.evList);
+
+    ghostAction(&ghost);
     
-    
+    //printRoomList(&house.rooms);
     cleanupHouse(&house);
     return 0;
 }
