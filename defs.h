@@ -133,7 +133,7 @@ void populateRooms(HouseType *house);//populate the rooms in the house
 //Ghost functions
 void initGhost(GhostType *ghost, RoomType *startingRoom);
 
-int checkHunter(GhostType *ghost);//helper function that checks if a hunter is in the room
+char checkHunter(GhostType *ghost);//helper function that checks if a hunter is in the room
 void ghostAction(GhostType *ghost);//helper function to choose a random action for the ghost to take
 void ghostMove(GhostType *ghost);//ghost action to move to another room
 
@@ -161,12 +161,12 @@ void ghostToString(enum GhostClass, char*); // Convert a ghost type to a string,
 void evidenceToString(enum EvidenceType, char*); // Convert an evidence type to a string, stored in output parameter
 
 // Logging Utilities
-void l_hunterInit(char* name, enum EvidenceType equipment);
+void l_hunterInit(char* name, enum EvidenceType equipment);//used
 void l_hunterMove(char* name, char* room);
 void l_hunterReview(char* name, enum LoggerDetails reviewResult);
 void l_hunterCollect(char* name, enum EvidenceType evidence, char* room);
 void l_hunterExit(char* name, enum LoggerDetails reason);
-void l_ghostInit(enum GhostClass type, char* room);
-void l_ghostMove(char* room);
-void l_ghostEvidence(enum EvidenceType evidence, char* room);
+void l_ghostInit(enum GhostClass type, char* room);//used
+void l_ghostMove(char* room);//used
+void l_ghostEvidence(enum EvidenceType evidence, char* room);//used
 void l_ghostExit(enum LoggerDetails reason);
