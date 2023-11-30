@@ -9,7 +9,7 @@ void initEvidenceList(EvidenceListType *list){
     sem_init(&(list->mutex), 0, 1);//initialize the semaphore
 }
 
-void addEvidence(EvidenceListType *list, GhostType *ghost){
+void leaveEvidence(EvidenceListType *list, GhostType *ghost){//ghost leaves evidence behind
     EvidenceNodeType *newNode;
     newNode = malloc(sizeof(EvidenceNodeType));
 
@@ -18,49 +18,77 @@ void addEvidence(EvidenceListType *list, GhostType *ghost){
     case POLTERGEIST://EMF, TEMPERATURE, FINGERPRINTS
         if(rng == 0){
             newNode->evidence = 0;//EMF
+            l_ghostEvidence(0, ghost->currRoom->name);
         }
         else if(rng == 1){
             newNode->evidence = 1;//TEMP
+            l_ghostEvidence(1, ghost->currRoom->name);
         }
         else if(rng == 2){
             newNode->evidence = 2;//FINGERPRINTS
+            l_ghostEvidence(2, ghost->currRoom->name);
         }
         break;
     case BANSHEE://EMF, TEMPERATURE, SOUND
         if(rng == 0){
             newNode->evidence = 0;//EMF
+            l_ghostEvidence(0, ghost->currRoom->name);
         }
         else if(rng == 1){
             newNode->evidence = 1;//TEMP
+            l_ghostEvidence(1, ghost->currRoom->name);
         }
         else if(rng == 2){
             newNode->evidence = 3;//SOUND
+            l_ghostEvidence(3, ghost->currRoom->name);
         }
         break;
     case BULLIES://EMF, FINGERPRINTS, and SOUND
         if(rng == 0){
             newNode->evidence = 0;//EMF
+            l_ghostEvidence(0, ghost->currRoom->name);
         }
         else if(rng == 1){
             newNode->evidence = 2;//FINGERPRINTS
+            l_ghostEvidence(2, ghost->currRoom->name);
         }
         else if(rng == 2){
             newNode->evidence = 3;//SOUND
+            l_ghostEvidence(3, ghost->currRoom->name);
         }
         break;
     case PHANTOM://TEMPERATURE, FINGERPRINTS, and SOUND
         if(rng == 0){
             newNode->evidence = 1;//TEMP
+            l_ghostEvidence(1, ghost->currRoom->name);
         }
         else if(rng == 1){
             newNode->evidence = 2;//FINGERPRINTS
+            l_ghostEvidence(2, ghost->currRoom->name);
         }
         else if(rng == 2){
             newNode->evidence = 3;//SOUND
+            l_ghostEvidence(3, ghost->currRoom->name);
         }
         break;
     }
+    
+    newNode->next = NULL;
+    newNode->prev = list->tail;
+    //add to the tail of the list
+    if(list->head == NULL){//list is empty
+        list->head = newNode;
+    }
+    else{//list isnt empty, just add to the tail
+        list->tail->next = newNode;
+    }
+    list->tail = newNode;//point the tail to the newly added node
+}
 
+void addEvidence(EvidenceListType *list, EvidenceType ev){
+    EvidenceNodeType *newNode;
+    newNode = malloc(sizeof(EvidenceNodeType));
+    newNode->evidence = ev;
     newNode->next = NULL;
     newNode->prev = list->tail;
     //add to the tail of the list
