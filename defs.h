@@ -107,12 +107,11 @@ struct Ghost{
 
 
 //Room functions
-void initRoom(char *name, RoomType **room);//not needed?
 RoomType* createRoom(char *name);
 void initRoomList(RoomListType *list);
 void addRoom(RoomListType *list, RoomType *room);//add room to the room list
 void connectRooms(RoomType *room1, RoomType *room2);//connect the 2nd room to the first room
-RoomType* chooseStartingRoom(RoomListType *list);
+RoomType* chooseStartingRoom(RoomListType *list, GhostType *ghost);
 
 void cleanupRoomData(RoomListType *list);//cleanup the room data
 void cleanupRoomAdj(RoomType *room);//free the adjacent rooms of room
@@ -131,20 +130,22 @@ void populateRooms(HouseType *house);//populate the rooms in the house
 
 //Ghost functions
 void initGhost(GhostType *ghost, RoomType *startingRoom);
-
 char checkHunter(GhostType *ghost);//helper function that checks if a hunter is in the room
-void ghostAction(GhostType *ghost);//helper function to choose a random action for the ghost to take
+void* ghostAction(void *arg);//helper function to choose a random action for the ghost to take
 void ghostMove(GhostType *ghost);//ghost action to move to another room
+void ghostExit(GhostType *ghost);
 
 //Hunter functions
 void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, EvidenceType evType, EvidenceListType *evList);
 void initHunterList(HunterListType *list);
 void addHunter(HunterListType *list, HunterType *hunter);//adds to the house's master list of hunters
+void removeHunter(HunterListType *list, HunterType *hunter);
 void cleanupHunterList(HunterListType *list);
-void hunterAction(HunterType *hunter);
+void* hunterAction(void *arg);
 void hunterMove(HunterType *hunter);//move to random connected room
 void hunterCollect(HunterType *hunter);//collect evidence in the room
 void hunterReview(HunterType *hunter);//review evidence
+void hunterExit(HunterType *hunter);
 
 //Evidence functions
 void initEvidenceList(EvidenceListType *list);
@@ -160,6 +161,9 @@ float randFloat(float, float);  // Pseudo-random float generator function
 enum GhostClass randomGhost();  // Return a randomly selected a ghost type
 void ghostToString(enum GhostClass, char*); // Convert a ghost type to a string, stored in output paremeter
 void evidenceToString(enum EvidenceType, char*); // Convert an evidence type to a string, stored in output parameter
+char* hunterNameInput(char* name);//handle entering a name for a hunter
+int evidenceCheck(EvidenceListType *list);//loops through the hunter's evidence list and checks if sufficient or not
+void finalResult(HunterListType *list, GhostType *ghost);//displays final results
 
 // Logging Utilities
 void l_hunterInit(char* name, enum EvidenceType equipment);//used
