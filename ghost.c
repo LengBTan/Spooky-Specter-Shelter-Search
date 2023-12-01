@@ -7,10 +7,11 @@ void initGhost(GhostType *ghost, RoomType *startingRoom){
     l_ghostInit(ghost->class, startingRoom->name);
 }
 
-void ghostAction(GhostType *ghost) {//choose a random ghost action
+void* ghostAction(void *arg) {//choose a random ghost action
+    GhostType *ghost = (GhostType*) arg;
     int rng;
     if(checkHunter(ghost)){//1 for hunter in room, 0 for no hunter in room
-        rng = randInt(0,1);//hunter is in the room, only either leave evidence or do nothing
+        rng = randInt(0,2);//hunter is in the room, only either leave evidence or do nothing
         ghost->boredom = 0;//if hunter is present, ghost boredom reset
     }
     else{
@@ -19,10 +20,9 @@ void ghostAction(GhostType *ghost) {//choose a random ghost action
     }
 
     if (ghost->boredom >= BOREDOM_MAX) {
-        // something happens here with the thread
-        //pthread_exit()
         //log the reason for leaving, LOG_BORED every time
-        //l_ghostExit(enum LoggerDetails reason);
+        l_ghostExit(LOG_BORED);
+        ghostExit(ghost);
         return;
     }
 
@@ -49,8 +49,13 @@ void ghostMove(GhostType *ghost){
         index++;
     }
 
-    ghost->currRoom = selectRoom;
+    ghost->currRoom->ghost = NULL;//set the current room's ghost pointer to null
+    selectRoom->ghost = ghost;//set the destination room's ghost pointer to the ghost
+    ghost->currRoom = selectRoom;//set the ghost's current room to the randomly selected room
     l_ghostMove(selectRoom->name);
+
+    
+    
 }
 
 char checkHunter(GhostType *ghost){
@@ -60,4 +65,8 @@ char checkHunter(GhostType *ghost){
     else{
         return 0;
     }
+}
+
+void ghostExit(GhostType *ghost){
+    //end thread here?
 }
