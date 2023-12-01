@@ -2,7 +2,7 @@
 
 int main(){
     srand(time(NULL));// Initialize the random number generator
-    pthread_t threads[5];//create 5 threads
+    pthread_t threads[NUM_THREADS];//create 5 threads, 4 hunters and 1 ghost
 
     //initialize a house
     HouseType house;
@@ -10,51 +10,61 @@ int main(){
     populateRooms(&house);
     
     HunterType h1,h2,h3,h4;
-    GhostType ghost;
-    initGhost(&ghost, chooseStartingRoom(&house.rooms, &ghost));
+    // GhostType ghost;
+    // initGhost(&ghost, chooseStartingRoom(&house.rooms, &ghost));
 
     // initialize hunters:
     char name[MAX_STR];
     hunterNameInput(name);
     initHunter(name, &h1, house.rooms.head->data, 0, &house.evList);
-    // hunterNameInput(name);
-    // initHunter(name, &h2, house.rooms.head->data, 1, &house.evList);
-    // hunterNameInput(name);
-    // initHunter(name, &h3, house.rooms.head->data, 2, &house.evList);
-    // hunterNameInput(name);
-    // initHunter(name, &h4, house.rooms.head->data, 3, &house.evList);
+    hunterNameInput(name);
+    initHunter(name, &h2, house.rooms.head->data, 1, &house.evList);
+    hunterNameInput(name);
+    initHunter(name, &h3, house.rooms.head->data, 2, &house.evList);
+    hunterNameInput(name);
+    initHunter(name, &h4, house.rooms.head->data, 3, &house.evList);
 
 
 
     pthread_create(threads+0, NULL, hunterAction, &h1);
-    // pthread_create(threads+1, NULL, hunterAction, &h2);
+    pthread_create(threads+1, NULL, hunterAction, &h2);
     // pthread_create(threads+2, NULL, hunterAction, &h3);
     // pthread_create(threads+3, NULL, hunterAction, &h4);
+    //pthread_create(threads+4, NULL, ghostAction, &ghost);
 
     pthread_join(threads[0], NULL);
-
-    // addEvidence(&house.rooms.head->data->evList, 0);
-    // printf("EVIDENCE IN THE ROOM: %d", house.rooms.head->data->evList.head->evidence);
-    // HunterType h1;
-    // initHunter("joel", &h1, house.rooms.head->data, 0, &house.evList);
-    // HunterType h2;
-    // initHunter("jeff", &h2, house.rooms.head->data, 1, &house.evList);
-    // HunterType h3;
-    // initHunter("john", &h3, house.rooms.head->data, 2, &house.evList);
-    // HunterType h4;
-    // initHunter("joe", &h4, house.rooms.head->data, 3, &house.evList);
-    // ghostAction(&ghost);
-    // hunterAction(&h1);
-    // hunterAction(&h2);
-    // hunterAction(&h3);
-    // hunterAction(&h4);
+    pthread_join(threads[1], NULL);
+    // for(int i = 0; i < 2; i++){//change 4 to NUM_THREADS for ghost
+    //     pthread_join(threads[i], NULL);
+    // }
     
 
-    removeHunter(&h1.currRoom->hunterList, &h1);
+    //ghost thread
+    /*
+    addEvidence(&house.rooms.head->data->evList, 0);
+    printf("EVIDENCE IN THE ROOM: %d", house.rooms.head->data->evList.head->evidence);
+    HunterType h1;
+    initHunter("joel", &h1, house.rooms.head->data, 0, &house.evList);
+    HunterType h2;
+    initHunter("jeff", &h2, house.rooms.head->data, 1, &house.evList);
+    HunterType h3;
+    initHunter("john", &h3, house.rooms.head->data, 2, &house.evList);
+    HunterType h4;
+    initHunter("joe", &h4, house.rooms.head->data, 3, &house.evList);
+    ghostAction(&ghost);
+    hunterAction(&h1);
+    hunterAction(&h2);
+    hunterAction(&h3);
+    hunterAction(&h4);
+    */
+
+    //removeHunter(&h1.currRoom->hunterList, &h1);
     // removeHunter(&h2.currRoom->hunterList, &h2);
     // removeHunter(&h3.currRoom->hunterList, &h3);
     // removeHunter(&h4.currRoom->hunterList, &h4);
     //printRoomList(&house.rooms);
+
+    
     cleanupHouse(&house);
     return 0;
 }
