@@ -1,4 +1,4 @@
-OPT = -g #-Wall -Wextras -Werror #-g for debugging
+OPT = -g -Wall -Wextra -Werror -fsanitize=thread #-g for debugging
 
 run: main.o utils.o logger.o house.o room.o hunter.o ghost.o evidence.o
 	gcc $(OPT) -o run main.o utils.o logger.o house.o room.o hunter.o ghost.o evidence.o
