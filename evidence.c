@@ -13,7 +13,7 @@ void leaveEvidence(EvidenceListType *list, GhostType *ghost){//ghost leaves evid
     EvidenceNodeType *newNode;
     newNode = malloc(sizeof(EvidenceNodeType));
 
-    int rng = randInt(0,2);//evidence depends on the ghost type and is random
+    int rng = randInt(0,3);//evidence depends on the ghost type and is random
     switch (ghost->class){
     case POLTERGEIST://EMF, TEMPERATURE, FINGERPRINTS
         if(rng == 0){
@@ -70,6 +70,9 @@ void leaveEvidence(EvidenceListType *list, GhostType *ghost){//ghost leaves evid
             newNode->evidence = 3;//SOUND
             l_ghostEvidence(3, ghost->currRoom->name);
         }
+        break;
+
+    default:
         break;
     }
     
