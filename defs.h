@@ -17,6 +17,7 @@
 #define FEAR_MAX        10
 #define LOGGING         C_TRUE
 #define NUM_ROOMS       12
+#define NUM_THREADS     5
 
 typedef enum EvidenceType EvidenceType;
 typedef enum GhostClass GhostClass;
@@ -133,7 +134,6 @@ void initGhost(GhostType *ghost, RoomType *startingRoom);
 char checkHunter(GhostType *ghost);//helper function that checks if a hunter is in the room
 void* ghostAction(void *arg);//helper function to choose a random action for the ghost to take
 void ghostMove(GhostType *ghost);//ghost action to move to another room
-void ghostExit(GhostType *ghost);
 
 //Hunter functions
 void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, EvidenceType evType, EvidenceListType *evList);
@@ -145,7 +145,6 @@ void* hunterAction(void *arg);
 void hunterMove(HunterType *hunter);//move to random connected room
 void hunterCollect(HunterType *hunter);//collect evidence in the room
 void hunterReview(HunterType *hunter);//review evidence
-void hunterExit(HunterType *hunter);
 
 //Evidence functions
 void initEvidenceList(EvidenceListType *list);
@@ -161,7 +160,7 @@ float randFloat(float, float);  // Pseudo-random float generator function
 enum GhostClass randomGhost();  // Return a randomly selected a ghost type
 void ghostToString(enum GhostClass, char*); // Convert a ghost type to a string, stored in output paremeter
 void evidenceToString(enum EvidenceType, char*); // Convert an evidence type to a string, stored in output parameter
-char* hunterNameInput(char* name);//handle entering a name for a hunter
+void hunterNameInput(char* name);//handle entering a name for a hunter
 int evidenceCheck(EvidenceListType *list);//loops through the hunter's evidence list and checks if sufficient or not
 void finalResult(HunterListType *list, GhostType *ghost);//displays final results
 
