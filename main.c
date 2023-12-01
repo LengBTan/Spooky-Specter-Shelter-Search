@@ -2,20 +2,39 @@
 
 int main(){
     srand(time(NULL));// Initialize the random number generator
+    pthread_t threads[5];//create 5 threads
 
-    // Create the house: You may change this, but it's here for demonstration purposes
-    // Note: This code will not compile until you have implemented the house functions and structures
+    //initialize a house
     HouseType house;
     initHouse(&house);
     populateRooms(&house);
     
-    
+    HunterType h1,h2,h3,h4;
     GhostType ghost;
-    initGhost(&ghost, chooseStartingRoom(&house.rooms));
-    //printf("GHOST STARTING CLASS: %d ", ghost.class);
+    initGhost(&ghost, chooseStartingRoom(&house.rooms, &ghost));
+
+    // initialize hunters:
+    char name[MAX_STR];
+    hunterNameInput(name);
+    initHunter(name, &h1, house.rooms.head->data, 0, &house.evList);
+    // hunterNameInput(name);
+    // initHunter(name, &h2, house.rooms.head->data, 1, &house.evList);
+    // hunterNameInput(name);
+    // initHunter(name, &h3, house.rooms.head->data, 2, &house.evList);
+    // hunterNameInput(name);
+    // initHunter(name, &h4, house.rooms.head->data, 3, &house.evList);
+
+
+
+    pthread_create(threads+0, NULL, hunterAction, &h1);
+    // pthread_create(threads+1, NULL, hunterAction, &h2);
+    // pthread_create(threads+2, NULL, hunterAction, &h3);
+    // pthread_create(threads+3, NULL, hunterAction, &h4);
+
+    pthread_join(threads[0], NULL);
+
     // addEvidence(&house.rooms.head->data->evList, 0);
     // printf("EVIDENCE IN THE ROOM: %d", house.rooms.head->data->evList.head->evidence);
-    
     // HunterType h1;
     // initHunter("joel", &h1, house.rooms.head->data, 0, &house.evList);
     // HunterType h2;
@@ -24,10 +43,18 @@ int main(){
     // initHunter("john", &h3, house.rooms.head->data, 2, &house.evList);
     // HunterType h4;
     // initHunter("joe", &h4, house.rooms.head->data, 3, &house.evList);
-
-    ghostAction(&ghost);
+    // ghostAction(&ghost);
+    // hunterAction(&h1);
+    // hunterAction(&h2);
+    // hunterAction(&h3);
+    // hunterAction(&h4);
     
-    printRoomList(&house.rooms);
+
+    removeHunter(&h1.currRoom->hunterList, &h1);
+    // removeHunter(&h2.currRoom->hunterList, &h2);
+    // removeHunter(&h3.currRoom->hunterList, &h3);
+    // removeHunter(&h4.currRoom->hunterList, &h4);
+    //printRoomList(&house.rooms);
     cleanupHouse(&house);
     return 0;
 }
