@@ -88,10 +88,10 @@ void ghostToString(enum GhostClass ghost, char* buffer) {
     }
 }
 
-char* hunterNameInput(char* name) {
+void hunterNameInput(char* name) {
     printf("Please enter your hunter's name: ");
     fgets(name, MAX_STR, stdin);
-    name[strlen(name)-1] = 0;//remove the nextline character
+    name[strlen(name)-1] = 0;//remove the nextline character 
 }
 
 int evidenceCheck(EvidenceListType *list) {
