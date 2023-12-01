@@ -1,25 +1,16 @@
 #include "defs.h"
 
-void initRoom(char *name, RoomType **room) {
-    strcpy((*room)->name, name); //sets the room name
-    initRoomList(&(*room)->adjRooms);//initialize the roomList in room
-    initEvidenceList(&(*room)->evList);//initialize the evidence list in the room
-    initHunterList(&(*room)->hunterList);//collection of hunters in the room
-    (*room)->ghost = NULL;
-
-    sem_init(&((*room)->mutex), 0, 1); //initializes the semaphore
-}
-
 RoomType* createRoom(char *name){
     RoomType *room;//dynamically allocate the room
     room = malloc(sizeof(RoomType));//dynamically allocate the room
 
     //initialize its values
-    strcpy(room->name, name);
-    initRoomList(&room->adjRooms);
-    initEvidenceList(&room->evList);
-    initHunterList(&room->hunterList);
-
+    strcpy(room->name, name);//initialize the name
+    initRoomList(&room->adjRooms);//initialize the roomList
+    initEvidenceList(&room->evList);//initialize the evidenceList
+    initHunterList(&room->hunterList);//initialize the hunterList
+    room->ghost = NULL;//initialize the ghost pointer
+    sem_init(&room->mutex, 0, 1); //initializes the semaphore
     return room;//return the pointer of this room
 }
 
@@ -144,12 +135,13 @@ void printRoomHunter(RoomType *room) {
 
 
 void printRoom(RoomType *room){
-    printf("    Room: %s\n", room->name);
-    printf("ROOM POINTER: %p\n", room);//just to check its address in memory, no duplicate rooms
+    printf("Room: %s\n", room->name);
+    printf("    ROOM POINTER: %p\n", room);//just to check its address in memory, no duplicate rooms
     printRoomAdj(room);
     printRoomEv(room);
     printRoomHunter(room);
     //insert a print ghost function here
+    printf("            ghost pointer: %p \n",room->ghost);
     printf("-----------------\n");
 }
 
@@ -163,7 +155,7 @@ void printRoomList(RoomListType *list){
 	}
 }
 
-RoomType* chooseStartingRoom(RoomListType *list){
+RoomType* chooseStartingRoom(RoomListType *list, GhostType *ghost){
     int rng = randInt(1,NUM_ROOMS);//first room (room 0) is the van
     int index = 0;
     RoomNodeType *currNode;
@@ -177,5 +169,6 @@ RoomType* chooseStartingRoom(RoomListType *list){
         index++;
     }
 
+    startingRoom->ghost = ghost;
     return startingRoom;
 }
