@@ -13,7 +13,7 @@ void* ghostAction(void *arg) {//choose a random ghost action
 
     
     while(ghost->boredom <= BOREDOM_MAX){
-        
+        usleep(GHOST_WAIT);
         if(checkHunter(ghost)){//1 for hunter in room, 0 for no hunter in room
             rng = randInt(0,2);//hunter is in the room, only either leave evidence or do nothing
             ghost->boredom = 0;//if hunter is present, ghost boredom reset
@@ -23,19 +23,14 @@ void* ghostAction(void *arg) {//choose a random ghost action
             ghost->boredom++;
         }
 
-        // sem_wait(&ghost->currRoom->mutex);
-        if (rng == 0) {// ghost leaves evidence
-            // sem_wait(&ghost->currRoom->mutex);
-            leaveEvidence(&(ghost->currRoom->evList), ghost);
-            // sem_post(&ghost->currRoom->mutex);
+        if (rng == 0) {// ghost leaves evidence         
+            leaveEvidence(ghost);
         }
         //RNG = 1 does nothing
         else if (rng == 2) {//ghost moves to adjacent room only if hunter is not in the same room 
             ghostMove(ghost);
         }
-
-        // sem_post(&ghost->currRoom->mutex);
-        usleep(GHOST_WAIT);
+        
     }
 
     if (ghost->boredom >= BOREDOM_MAX) {
@@ -54,9 +49,6 @@ void ghostMove(GhostType *ghost){
     RoomNodeType *nextNode;
     RoomType* selectRoom;
 
-
-    
-
     currNode = ghost->currRoom->adjRooms.head;
     while(currNode != NULL && index <= roomNum){//traverse through the list adjacent rooms, stop when we get to the index of the room that was randomly chosen
         nextNode = currNode->next;
@@ -65,24 +57,26 @@ void ghostMove(GhostType *ghost){
         index++;
     }
 
-    // sem_wait(&ghost->currRoom->mutex);
-    // sem_wait(&selectRoom->mutex);
-
+    sem_wait(&(ghost->currRoom->mutex));
     ghost->currRoom->ghost = NULL;//set the current room's ghost pointer to null
-    selectRoom->ghost = ghost;//set the destination room's ghost pointer to the ghost
-    ghost->currRoom = selectRoom;//set the ghost's current room to the randomly selected room
-    l_ghostMove(selectRoom->name);
+    sem_post(&(ghost->currRoom->mutex));
 
-    // sem_post(&ghost->currRoom->mutex);
-    // sem_post(&selectRoom->mutex);
+    sem_wait(&(selectRoom->mutex));
+    selectRoom->ghost = ghost;//set the destination room's ghost pointer to the ghost
+    sem_post(&(selectRoom->mutex));
     
+    ghost->currRoom = selectRoom;//set the ghost's current room to the chosen room
+    l_ghostMove(selectRoom->name);//log its movement
 }
 
 char checkHunter(GhostType *ghost){
+    sem_wait(&(ghost->currRoom->mutex));
     if(ghost->currRoom->hunterList.head != NULL){//there is a hunter in the room
+        sem_post(&(ghost->currRoom->mutex));
         return 1;
     }
     else{
+        sem_post(&(ghost->currRoom->mutex));
         return 0;
     }
 }
