@@ -2,13 +2,13 @@
 
 //initialize each of the house's fields
 void initHouse(HouseType *house){
-    initHunterList(&house->HunterList);
+    initHunterList(&house->hunterList);
     initRoomList(&house->rooms);
     initEvidenceList(&house->evList);
 }
 
 void cleanupHouse(HouseType *house){
-    cleanupHunterList(&house->HunterList);
+    cleanupHunterList(&house->hunterList);
     cleanupRoomData(&house->rooms);
     cleanupRoomList(&house->rooms);
     cleanupEvidenceList(&house->evList);
