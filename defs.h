@@ -12,7 +12,7 @@
 #define C_TRUE          1
 #define C_FALSE         0
 #define HUNTER_WAIT     5000
-#define GHOST_WAIT      600
+#define GHOST_WAIT      800
 #define NUM_HUNTERS     4
 #define FEAR_MAX        10
 #define LOGGING         C_TRUE
@@ -144,12 +144,13 @@ void cleanupHunterList(HunterListType *list);
 void* hunterAction(void *arg);
 void hunterMove(HunterType *hunter);//move to random connected room
 void hunterCollect(HunterType *hunter);//collect evidence in the room
-void hunterReview(HunterType *hunter);//review evidence
+char hunterReview(HunterType *hunter);//review evidence
+char checkGhost(HunterType *hunter);//check if ghost is in the room
 
 //Evidence functions
 void initEvidenceList(EvidenceListType *list);
 void addEvidence(EvidenceListType *list, EvidenceType ev);//for hunters to add to the list
-void leaveEvidence(EvidenceListType *list, GhostType *ghost);//ghost action to leave evidence behind
+void leaveEvidence(GhostType *ghost);//ghost action to leave evidence behind
 void cleanupEvidenceList(EvidenceListType *list);
 
 
