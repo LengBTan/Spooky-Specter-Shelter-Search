@@ -186,7 +186,7 @@ void hunterMove(HunterType *hunter){
 }
 
 void hunterCollect(HunterType *hunter){
-    sem_wait(&hunter->currRoom->mutex);//lock the shared list, since this hunter is adding to the evidence list
+    sem_wait(&hunter->currRoom->mutex);
     // sem_wait(&hunter->currRoom->mutex);
     EvidenceNodeType *currNode;
     EvidenceNodeType *nextNode;
