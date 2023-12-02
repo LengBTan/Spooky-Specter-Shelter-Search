@@ -138,7 +138,7 @@ int evidenceCheck(EvidenceListType *list) {
     }
 }
 
-void finalResult(HunterListType *list, GhostType *ghost) {
+void finalResult(HouseType *house, GhostType *ghost) {
     printf("=======================================\n");
     printf("All done! Let's tally the results...\n");
     printf("=======================================\n");
@@ -146,15 +146,17 @@ void finalResult(HunterListType *list, GhostType *ghost) {
     int huntersLost = 0;
     HunterNodeType *currNode;
     HunterNodeType *nextNode;
-    currNode = list->head;
+    currNode = house->hunterList.head;
+
     while(currNode != NULL) { //loop through the hunter list 
         nextNode = currNode->next; 
         if (currNode->data->fear >= FEAR_MAX) {
-            printf("%s has run away in fear!", currNode->data->name);
+            printf("%s has run away in fear!\n", currNode->data->name);
+
             huntersLost++;
         }
         else if (currNode->data->boredom >= BOREDOM_MAX) {
-            printf("%s has gotten too bored to continue!", currNode->data->name);
+            printf("%s has gotten too bored to continue!\n", currNode->data->name);
             huntersLost++;
         }
         currNode = nextNode;
@@ -173,7 +175,7 @@ void finalResult(HunterListType *list, GhostType *ghost) {
     //if hunters win (only when 3 evidence was collected AND at least one hunter reviewed it successfully and left the house safely): 
     else {
         printf("It seems the ghost has been discovered!\n");
-        printf("The hunters have won the game!");
+        printf("The hunters have won the game!\n");
         printf("Using the evidence they found, they correctly determined that the ghost is a %s\n", ghostName);
     }
     
@@ -187,7 +189,7 @@ void finalResult(HunterListType *list, GhostType *ghost) {
 
     EvidenceNodeType *currNode1;
     EvidenceNodeType *nextNode1;
-    currNode1 = list->head->data->evList->head;
+    currNode1 = house->evList.head;
 
     while(currNode1 != NULL) { //loop through the ev list 
         nextNode1 = currNode1->next; 
