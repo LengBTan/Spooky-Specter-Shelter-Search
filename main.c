@@ -10,8 +10,8 @@ int main(){
     populateRooms(&house);
     
     HunterType h1,h2,h3,h4;
-    // GhostType ghost;
-    // initGhost(&ghost, chooseStartingRoom(&house.rooms, &ghost));
+    GhostType ghost;
+    initGhost(&ghost, chooseStartingRoom(&house.rooms, &ghost));
 
     // initialize hunters:
     char name[MAX_STR];
@@ -28,13 +28,16 @@ int main(){
 
     pthread_create(threads+0, NULL, hunterAction, &h1);
     pthread_create(threads+1, NULL, hunterAction, &h2);
-    // pthread_create(threads+2, NULL, hunterAction, &h3);
-    // pthread_create(threads+3, NULL, hunterAction, &h4);
-    //pthread_create(threads+4, NULL, ghostAction, &ghost);
+    pthread_create(threads+2, NULL, hunterAction, &h3);
+    pthread_create(threads+3, NULL, hunterAction, &h4);
+    pthread_create(threads+4, NULL, ghostAction, &ghost);
 
     pthread_join(threads[0], NULL);
     pthread_join(threads[1], NULL);
-    // for(int i = 0; i < 2; i++){//change 4 to NUM_THREADS for ghost
+    pthread_join(threads[2], NULL);
+    pthread_join(threads[3], NULL);
+    pthread_join(threads[4], NULL);
+    // for(int i = 0; i < 4; i++){
     //     pthread_join(threads[i], NULL);
     // }
     
@@ -64,6 +67,7 @@ int main(){
     // removeHunter(&h4.currRoom->hunterList, &h4);
     //printRoomList(&house.rooms);
 
+    printf("\n\n\n\n\n\n D O N E   P R O G R A M");
     
     cleanupHouse(&house);
     return 0;
