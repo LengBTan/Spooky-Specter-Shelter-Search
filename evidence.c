@@ -154,12 +154,13 @@ void addEvidence(EvidenceListType *list, EvidenceType ev){
     newNode = malloc(sizeof(EvidenceNodeType));
     newNode->evidence = ev;
     newNode->next = NULL;
-    newNode->prev = list->tail;
+    // newNode->prev = list->tail;
     //add to the tail of the list
     if(list->head == NULL){//list is empty
         list->head = newNode;
     }
     else{//list isnt empty, just add to the tail
+        // newNode->prev = list->tail;
         list->tail->next = newNode;
     }
     list->tail = newNode;//point the tail to the newly added node
