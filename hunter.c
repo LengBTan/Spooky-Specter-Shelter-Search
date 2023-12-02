@@ -1,6 +1,6 @@
 #include "defs.h"
 
-void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, EvidenceType evType, EvidenceListType *evList) {
+void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, EvidenceType evType, EvidenceListType *evList, HouseType *house) {
     strcpy(hunter->name, name);
 
     hunter->currRoom = startingRoom;
@@ -10,10 +10,13 @@ void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, Evidence
     hunter->boredom = 0;
 
     addHunter(&startingRoom->hunterList, hunter);//add the hunter to the starting room list
+    addHunter(&house->hunterList, hunter);// add hunter to the house 
+    
     l_hunterInit(name, evType);
 }
 
 void initHunterList(HunterListType *list) {
+    list->size = 0;
     list->head = NULL;
     list->tail = NULL;
 }
@@ -37,7 +40,7 @@ void addHunter(HunterListType *list, HunterType *hunter) {
     }
 
     list->tail = newNode;
-
+    list->size++;
     sem_post(&(hunter->currRoom->mutex));
 }
 
@@ -104,6 +107,17 @@ void* hunterAction(void *arg){
             hunter->boredom++;
         }
 
+        if(hunter->fear >= FEAR_MAX){
+            l_hunterExit(hunter->name, 0);
+            removeHunter(&hunter->currRoom->hunterList, hunter);//remove the hunter from the room
+            break;
+        }
+        if (hunter->boredom >= BOREDOM_MAX) {
+            removeHunter(&hunter->currRoom->hunterList, hunter);//remove the hunter from the room
+            l_hunterExit(hunter->name, 1);
+            break;
+        }
+
         int rng;
 
         sem_wait(&hunter->currRoom->evList.mutex);
@@ -114,20 +128,13 @@ void* hunterAction(void *arg){
             rng = randInt(0,2);//min = 0, 1 = 1
         }
         sem_post(&hunter->currRoom->evList.mutex);
+        
+
+        
+
         if(foundEv == 1){
             l_hunterExit(hunter->name, 2);
             removeHunter(&hunter->currRoom->hunterList, hunter);
-            break;
-        }
-
-        if(hunter->fear >= FEAR_MAX){
-            l_hunterExit(hunter->name, 0);
-            removeHunter(&hunter->currRoom->hunterList, hunter);//remove the hunter from the room
-            break;
-        }
-        if (hunter->boredom >= BOREDOM_MAX) {
-            removeHunter(&hunter->currRoom->hunterList, hunter);//remove the hunter from the room
-            l_hunterExit(hunter->name, 1);
             break;
         }
         
@@ -186,8 +193,10 @@ void hunterMove(HunterType *hunter){
 }
 
 void hunterCollect(HunterType *hunter){
-    sem_wait(&hunter->currRoom->mutex);
-    // sem_wait(&hunter->currRoom->mutex);
+    sem_wait(&hunter->currRoom->mutex);//wait/lock the current room
+
+    sem_wait(&hunter->currRoom->evList.mutex);//wait/lock the evidence list since we are reading from it
+
     EvidenceNodeType *currNode;
     EvidenceNodeType *nextNode;
     currNode = hunter->currRoom->evList.head;
@@ -198,12 +207,16 @@ void hunterCollect(HunterType *hunter){
         }
         currNode = nextNode;
     }
+
+    sem_post(&hunter->currRoom->evList.mutex);//finished reading the room's evidence list
+
+    if(currNode == NULL){//none of the evidence matches, since we traversed through the whole list 
+        sem_post(&hunter->currRoom->mutex);//unlock the shared evidence list
+        return;
+    }
     sem_post(&hunter->currRoom->mutex);//unlock the shared evidence list
     addEvidence(hunter->evList, hunter->evType);
     l_hunterCollect(hunter->name, hunter->evType, hunter->currRoom->name);//logs the evidence collection
-    
-    // sem_post(&hunter->currRoom->mutex);
-    //hunter evidence did not match
 }
 
 char hunterReview(HunterType *hunter){
@@ -212,7 +225,7 @@ char hunterReview(HunterType *hunter){
     // sem_post(&hunter->evList->mutex);
     if (result == 1) {// review successful
         l_hunterReview(hunter->name, 3);// review sufficient
-        l_hunterExit(hunter->name, 2);// exit because sufficient evidence
+        //l_hunterExit(hunter->name, 2);// exit because sufficient evidence
 
         return 1;
     }
