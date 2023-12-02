@@ -95,6 +95,7 @@ void hunterNameInput(char* name) {
 }
 
 int evidenceCheck(EvidenceListType *list) {
+    sem_wait(&list->mutex);
     char EMF = 0;
     char temp = 0;
     char fingerprints = 0;
@@ -119,7 +120,7 @@ int evidenceCheck(EvidenceListType *list) {
         }
         currNode = nextNode;
     }
-
+    sem_post(&list->mutex);
     if (EMF == 1 && temp == 1 && fingerprints == 1) {// ghost is a poltergeist
         return 1;
     }
