@@ -67,6 +67,7 @@ struct HunterNode{
 };
 
 struct HunterList{
+    int size;
     HunterNodeType *head;
     HunterNodeType *tail;
 };
@@ -93,7 +94,7 @@ struct Room{
 };
 
 struct House{
-    HunterListType HunterList;//collection of hunters, maybe just an array of hunters?
+    HunterListType hunterList;//collection of hunters, maybe just an array of hunters?
     RoomListType rooms;//linkedList of rooms
     EvidenceListType evList;//shared evidence list that hunters access
 };
@@ -136,7 +137,7 @@ void* ghostAction(void *arg);//helper function to choose a random action for the
 void ghostMove(GhostType *ghost);//ghost action to move to another room
 
 //Hunter functions
-void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, EvidenceType evType, EvidenceListType *evList);
+void initHunter(char *name, HunterType *hunter, RoomType *startingRoom, EvidenceType evType, EvidenceListType *evList, HouseType *house);
 void initHunterList(HunterListType *list);
 void addHunter(HunterListType *list, HunterType *hunter);//adds to the house's master list of hunters
 void removeHunter(HunterListType *list, HunterType *hunter);
@@ -161,9 +162,10 @@ float randFloat(float, float);  // Pseudo-random float generator function
 enum GhostClass randomGhost();  // Return a randomly selected a ghost type
 void ghostToString(enum GhostClass, char*); // Convert a ghost type to a string, stored in output paremeter
 void evidenceToString(enum EvidenceType, char*); // Convert an evidence type to a string, stored in output parameter
+
 void hunterNameInput(char* name);//handle entering a name for a hunter
 int evidenceCheck(EvidenceListType *list);//loops through the hunter's evidence list and checks if sufficient or not
-void finalResult(HunterListType *list, GhostType *ghost);//displays final results
+void finalResult(HouseType *house, GhostType *ghost);//displays final results
 
 // Logging Utilities
 void l_hunterInit(char* name, enum EvidenceType equipment);//used
