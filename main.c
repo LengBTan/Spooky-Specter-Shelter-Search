@@ -16,15 +16,13 @@ int main(){
     // initialize hunters:
     char name[MAX_STR];
     hunterNameInput(name);
-    initHunter(name, &h1, house.rooms.head->data, 0, &house.evList);
+    initHunter(name, &h1, house.rooms.head->data, 0, &house.evList, &house);
     hunterNameInput(name);
-    initHunter(name, &h2, house.rooms.head->data, 1, &house.evList);
+    initHunter(name, &h2, house.rooms.head->data, 1, &house.evList, &house);
     hunterNameInput(name);
-    initHunter(name, &h3, house.rooms.head->data, 2, &house.evList);
+    initHunter(name, &h3, house.rooms.head->data, 2, &house.evList, &house);
     hunterNameInput(name);
-    initHunter(name, &h4, house.rooms.head->data, 3, &house.evList);
-
-
+    initHunter(name, &h4, house.rooms.head->data, 3, &house.evList, &house);
 
     pthread_create(threads+0, NULL, hunterAction, &h1);
     pthread_create(threads+1, NULL, hunterAction, &h2);
@@ -37,38 +35,9 @@ int main(){
     pthread_join(threads[2], NULL);
     pthread_join(threads[3], NULL);
     pthread_join(threads[4], NULL);
-    // for(int i = 0; i < 4; i++){
-    //     pthread_join(threads[i], NULL);
-    // }
-    
 
-    //ghost thread
-    /*
-    addEvidence(&house.rooms.head->data->evList, 0);
-    printf("EVIDENCE IN THE ROOM: %d", house.rooms.head->data->evList.head->evidence);
-    HunterType h1;
-    initHunter("joel", &h1, house.rooms.head->data, 0, &house.evList);
-    HunterType h2;
-    initHunter("jeff", &h2, house.rooms.head->data, 1, &house.evList);
-    HunterType h3;
-    initHunter("john", &h3, house.rooms.head->data, 2, &house.evList);
-    HunterType h4;
-    initHunter("joe", &h4, house.rooms.head->data, 3, &house.evList);
-    ghostAction(&ghost);
-    hunterAction(&h1);
-    hunterAction(&h2);
-    hunterAction(&h3);
-    hunterAction(&h4);
-    */
+    finalResult(&house, &ghost);
 
-    //removeHunter(&h1.currRoom->hunterList, &h1);
-    // removeHunter(&h2.currRoom->hunterList, &h2);
-    // removeHunter(&h3.currRoom->hunterList, &h3);
-    // removeHunter(&h4.currRoom->hunterList, &h4);
-    //printRoomList(&house.rooms);
-
-    printf("\n\n\n\n\n\n D O N E   P R O G R A M");
-    
     cleanupHouse(&house);
     return 0;
 }
