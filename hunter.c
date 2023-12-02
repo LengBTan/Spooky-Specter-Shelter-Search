@@ -19,7 +19,8 @@ void initHunterList(HunterListType *list) {
 }
 
 void addHunter(HunterListType *list, HunterType *hunter) {
-    printf("RANDOMLY GENERATED ROOM: %s \n", hunter->currRoom->name);
+    //printf("RANDOMLY GENERATED ROOM: %s \n", hunter->currRoom->name);
+    sem_wait(&(hunter->currRoom->mutex));
     HunterNodeType *newNode;
     newNode = malloc(sizeof(HunterNodeType));
 
@@ -36,6 +37,8 @@ void addHunter(HunterListType *list, HunterType *hunter) {
     }
 
     list->tail = newNode;
+
+    sem_post(&(hunter->currRoom->mutex));
 }
 
 void cleanupHunterList(HunterListType *list) {
@@ -52,6 +55,8 @@ void cleanupHunterList(HunterListType *list) {
 
 //remove hunter from the current room
 void removeHunter(HunterListType *list, HunterType *hunter){
+    sem_wait(&(hunter->currRoom->mutex));
+
     HunterNodeType *currNode = list->head;
     HunterNodeType *prevNode = NULL;
 
@@ -64,24 +69,34 @@ void removeHunter(HunterListType *list, HunterType *hunter){
         currNode = currNode->next;
     }
 
-    if(prevNode == NULL){//hunter was at the head of the list
+    if(prevNode == NULL){//hunter was at the head of the list (only 1 hunter in the room)
         list->head = currNode->next;
+
+        if (currNode->next == NULL) {//the current node is the tail of the list
+            list->tail = NULL;//set the tail to null
+        }
     }
     else{
         prevNode->next = currNode->next;
+
+        if (currNode->next == NULL) {//the current node is the tail of the list
+            list->tail = prevNode;
+        }
     }
 
     free(currNode);//free the hunter node
-    
+    sem_post(&(hunter->currRoom->mutex));
 }
 
 void* hunterAction(void *arg){
     HunterType *hunter = (HunterType*) arg;
-
+    char foundEv = 0;
     //check if the ghost is in the same room as the hunter
     //while(hunter->fear <= FEAR_MAX && hunter->boredom <= BOREDOM_MAX){
     while(1){
-        if(hunter->currRoom->ghost == NULL){//current room's ghost pointer is null, no ghost
+        usleep(HUNTER_WAIT);
+        
+        if(checkGhost(hunter)){//ghost in room, increase fear and set boredom to 0
             hunter->fear++;
             hunter->boredom = 0;
         }
@@ -90,24 +105,24 @@ void* hunterAction(void *arg){
         }
 
         int rng;
+
+        sem_wait(&hunter->currRoom->evList.mutex);
         if (hunter->currRoom->evList.head != NULL) {//check if evidence exists in room
             rng = randInt(0,3);//min = 0, max-1 = 2
         }
         else {
             rng = randInt(0,2);//min = 0, 1 = 1
         }
+        sem_post(&hunter->currRoom->evList.mutex);
+        if(foundEv == 1){
+            l_hunterExit(hunter->name, 2);
+            removeHunter(&hunter->currRoom->hunterList, hunter);
+            break;
+        }
 
         if(hunter->fear >= FEAR_MAX){
             l_hunterExit(hunter->name, 0);
-            // sem_wait(&(hunter->currRoom->mutex));
-            // printf("            LOCKED IN EXIT\n");
-            // printf("START REMOVING HUNTER FROM CURRENT ROOM IN HUNTERACTION\n");
-            
-            // printf("FINISHED REMOVING HUNTER FROM CURRENT ROOM IN HUNTERACTION\n");
-            // printf("HUNTER's ROOM BEFORE EXITING: %s\n",hunter->currRoom->name);
-
-            // sem_post(&(hunter->currRoom->mutex));
-            printf("            UNLOCKED IN EXIT\n");
+            removeHunter(&hunter->currRoom->hunterList, hunter);//remove the hunter from the room
             break;
         }
         if (hunter->boredom >= BOREDOM_MAX) {
@@ -116,25 +131,21 @@ void* hunterAction(void *arg){
             break;
         }
         
-
-        // sem_wait(&(hunter->currRoom->mutex));
-        // printf("                LOCKED IN MAIN\n");
         if(rng == 0){//move to a random connected room
             hunterMove(hunter);
         }
+        
         else if(rng == 1){//review evidence that is shared
-            hunterReview(hunter);
+            //sem_wait(&(hunter->evList->mutex));
+            foundEv = hunterReview(hunter);
+            //sem_post(&(hunter->evList->mutex));
         }
         else if(rng == 2){//collect evidence in a room if evidence is in it & equipment matches
-            // sem_wait(&hunter->evList->mutex);//lock the shared list, since this hunter is adding to the evidence list
-            //hunterCollect(hunter);
-            // sem_post(&hunter->evList->mutex);//unlock the shared evidence list
+            hunterCollect(hunter);
         }
-        // sem_post(&(hunter->currRoom->mutex));
-        // printf("                UNLOCKED IN MAIN\n");
-        usleep(HUNTER_WAIT);
+        
     }
-removeHunter(&hunter->currRoom->hunterList, hunter);//remove the hunter from the room
+    
     return NULL;
 }
 
@@ -155,64 +166,71 @@ void hunterMove(HunterType *hunter){
         index++;
     }
     
-    l_hunterMove(hunter->name, selectRoom->name);//log the move
     
     
-    
-    
-    //sem_wait(&(selectRoom->mutex));
-    printf("START REMOVING HUNTER FROM CURRENT ROOM\n");
+    // printf("    LOCKED THE CURR ROOM MUTEX FOR HUNTER: %s\n", hunter->name);
+    //printf("START REMOVING HUNTER FROM CURRENT ROOM\n");
     removeHunter(&hunter->currRoom->hunterList, hunter);//remove hunter from the current room's hunterlist (and free its memory)
-    printf("FINISHED REMOVING HUNTER FROM CURRENT ROOM\n");
-    
+    //printf("FINISHED REMOVING HUNTER FROM CURRENT ROOM\n");
     hunter->currRoom = selectRoom;//set the hunter's current room pointer to the randomly chosen room
-    printf("RANDOMLY GENERATED ROOM: %s \n", hunter->currRoom->name);
-    //sem_wait(&(selectRoom->mutex));
-    // printf("    LOCKED THE NEXT ROOM MUTEX FOR HUNTER: %s\n", hunter->name);
+    // printf("    UNLOCKED THE CURR ROOM MUTEX FOR HUNTER: %s\n", hunter->name);
 
+    //printf("RANDOMLY GENERATED ROOM: %s \n", hunter->currRoom->name);
+
+    // printf("    LOCKED THE NEXT ROOM MUTEX FOR HUNTER: %s\n", hunter->name);
     addHunter(&selectRoom->hunterList, hunter);//add hunter to the room it moved to
-    printf("FINISHED ADDING HUNTER TO CHOSEN ROOM\n");
-    //sem_post(&(currentRoom->mutex));
-    //sem_post(&(selectRoom->mutex));
+    //printf("FINISHED ADDING HUNTER TO CHOSEN ROOM\n");
     // printf("    UNLOCKED THE NEXT ROOM MUTEX FOR HUNTER: %s\n", hunter->name);
     
-    
-    
+    l_hunterMove(hunter->name, selectRoom->name);//log the move
 }
 
 void hunterCollect(HunterType *hunter){
-    //something with the mutex/threading happens in this function??
-    
+    sem_wait(&hunter->currRoom->mutex);//lock the shared list, since this hunter is adding to the evidence list
+    // sem_wait(&hunter->currRoom->mutex);
     EvidenceNodeType *currNode;
     EvidenceNodeType *nextNode;
     currNode = hunter->currRoom->evList.head;
     while(currNode != NULL) {
         nextNode = currNode->next;
         if (currNode->evidence == hunter->evType) {//if evidence matches the hunters collection type
-            l_hunterCollect(hunter->name, currNode->evidence, hunter->currRoom->name);//logs the evidence collection
-            if (hunter->evList->head == NULL) {
-                hunter->evList->head = currNode; //if the list is empty, the new evidence is the head
-            }
-            else {
-                hunter->evList->tail->next = currNode; //update the tail node
-            }
-            hunter->evList->tail = currNode; // new evidence is set as the tail
-            hunter->evList->size++;
-            return;
+            break;
         }
         currNode = nextNode;
     }
+    sem_post(&hunter->currRoom->mutex);//unlock the shared evidence list
+    addEvidence(hunter->evList, hunter->evType);
+    l_hunterCollect(hunter->name, hunter->evType, hunter->currRoom->name);//logs the evidence collection
+    
+    // sem_post(&hunter->currRoom->mutex);
     //hunter evidence did not match
 }
 
-void hunterReview(HunterType *hunter){
+char hunterReview(HunterType *hunter){
+    //sem_wait(&hunter->evList->mutex);
     int result = evidenceCheck(hunter->evList);// helper function in utils.c
-
+    // sem_post(&hunter->evList->mutex);
     if (result == 1) {// review successful
         l_hunterReview(hunter->name, 3);// review sufficient
         l_hunterExit(hunter->name, 2);// exit because sufficient evidence
+
+        return 1;
     }
     else {
         l_hunterReview(hunter->name, 4);// review insufficient
+        return 0;
     }
+}
+
+char checkGhost(HunterType *hunter){//check if ghost is in the room
+    sem_wait(&(hunter->currRoom->mutex));
+        if(hunter->currRoom->ghost == NULL){
+            sem_post(&(hunter->currRoom->mutex));
+            return 0;
+        }
+        else{
+            sem_post(&(hunter->currRoom->mutex));
+            return 1;
+        }
+        
 }
