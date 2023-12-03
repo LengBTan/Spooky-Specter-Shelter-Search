@@ -1,12 +1,26 @@
 #include "defs.h"
 
-//initialize each of the house's fields
+/*Function: initHouse()
+  Description: initializes all fields in the house 
+
+  Output: HouseType *house - pointer to a house
+
+  Returns: void
+*/
 void initHouse(HouseType *house){
     initHunterList(&house->hunterList);
     initRoomList(&house->rooms);
     initEvidenceList(&house->evList);
 }
 
+/*Function: cleanupHouse()
+  Description: deallocates all dynamically allocated memory associated with the
+               house
+
+  Output: HouseType *house - pointer to a house
+  
+  Returns: void
+*/
 void cleanupHouse(HouseType *house){
     cleanupHunterList(&house->hunterList);
     cleanupRoomData(&house->rooms);
@@ -37,33 +51,6 @@ void populateRooms(HouseType* house) {
     RoomType *living_room        = createRoom("Living Room");
     RoomType *garage             = createRoom("Garage");
     RoomType *utility_room       = createRoom("Utility Room");
-    // RoomType* van;
-    // RoomType* hallway;
-    // RoomType* master_bedroom;
-    // RoomType* boys_bedroom;
-    // RoomType* bathroom;
-    // RoomType* basement;
-    // RoomType* basement_hallway;
-    // RoomType* right_storage_room;
-    // RoomType* left_storage_room;
-    // RoomType* kitchen;
-    // RoomType* living_room;
-    // RoomType* garage;
-    // RoomType* utility_room;
-    // initRoom("Van", &van);
-    // initRoom("Hallway", &hallway);
-    // initRoom("Master Bedroom", &master_bedroom);
-    // initRoom("Boy's Bedroom", &boys_bedroom);
-    // initRoom("Bathroom", &bathroom);
-    // initRoom("Basement", &basement);
-    // initRoom("Basement Hallway", &basement_hallway);
-    // initRoom("Right Storage Room", &right_storage_room);
-    // initRoom("Left Storage Room", &left_storage_room);
-    // initRoom("Kitchen", &kitchen);
-    // initRoom("Living Room", &living_room);
-    // initRoom("Garage", &garage);
-    // initRoom("Utility Room", &utility_room);
-
 
     // This adds each room to each other's room lists
     // All rooms are two-way connections
