@@ -6,8 +6,7 @@
         in:   upper end of the range of the generated number
     return:   randomly generated integer in the range [0, max-1) 
 */
-int randInt(int min, int max)
-{
+int randInt(int min, int max) {
     return (int) randFloat(min, max);
 }
 
@@ -88,14 +87,26 @@ void ghostToString(enum GhostClass ghost, char* buffer) {
     }
 }
 
+/*Function: hunterNameInput()
+  Description: takes user input for the hunter's name
+
+  Output: char *name - pointer to a string name
+  Returns: void
+*/
 void hunterNameInput(char* name) {
     printf("Please enter your hunter's name: ");
     fgets(name, MAX_STR, stdin);
-    name[strlen(name)-1] = 0;//remove the nextline character 
+    name[strlen(name)-1] = 0; // remove the nextline character 
 }
 
+/*Function: evidenceCheck()
+  Description: check if there is sufficient evidence when the hunter reviews evidence
+
+  Input: EvidenceListType *list - pointer to a EvidenceList
+  Returns: 1 or 0, depending on sufficient evidence
+*/
 int evidenceCheck(EvidenceListType *list) {
-    sem_wait(&list->mutex);
+    sem_wait(&list->mutex); // lock since we are reading
     char EMF = 0;
     char temp = 0;
     char fingerprints = 0;
@@ -104,7 +115,7 @@ int evidenceCheck(EvidenceListType *list) {
     EvidenceNodeType *currNode;
     EvidenceNodeType *nextNode;
     currNode = list->head;
-    while(currNode != NULL) { //loop through the evidence list 
+    while(currNode != NULL) { // loop through the evidence list 
         nextNode = currNode->next; 
         if (currNode->evidence == 0) {
             EMF = 1;
@@ -120,35 +131,43 @@ int evidenceCheck(EvidenceListType *list) {
         }
         currNode = nextNode;
     }
+    
     sem_post(&list->mutex);
-    if (EMF == 1 && temp == 1 && fingerprints == 1) {// ghost is a poltergeist
+    if (EMF == 1 && temp == 1 && fingerprints == 1) { // ghost is a poltergeist
+        return 0;
+    }
+    else if (EMF == 1 && temp == 1 && sound == 1) { // ghost is a banshee
         return 1;
     }
-    else if (EMF == 1 && temp == 1 && sound == 1) {// ghost is a banshee
-        return 1;
+    else if (EMF == 1 && fingerprints == 1 && sound == 1) { // ghost is bullies
+        return 2;
     }
-    else if (EMF == 1 && fingerprints == 1 && sound == 1) {// ghost is bullies
-        return 1;
-    }
-    else if (temp == 1 && fingerprints == 1 && sound == 1) {// ghost is a phantom
-        return 1;
+    else if (temp == 1 && fingerprints == 1 && sound == 1) { // ghost is a phantom
+        return 3;
     }
     else {
-        return 0;
+        return 4; // ghost has not been discovered yet
     }
 }
 
+/*Function: finalResult()
+  Description: prints out the result of the game
+
+  Input: HouseType *house - pointer to a House that is being read
+  Input: GhostType *ghost - pointer to a Ghost that is being read
+  Returns: void
+*/
 void finalResult(HouseType *house, GhostType *ghost) {
     printf("=======================================\n");
     printf("All done! Let's tally the results...\n");
     printf("=======================================\n");
-    //below prints out the hunters that ran away/too bored
+    // below prints out the hunters that ran away/too bored
     int huntersLost = 0;
     HunterNodeType *currNode;
     HunterNodeType *nextNode;
     currNode = house->hunterList.head;
 
-    while(currNode != NULL) { //loop through the hunter list 
+    while(currNode != NULL) { // loop through the hunter list 
         nextNode = currNode->next; 
         if (currNode->data->fear >= FEAR_MAX) {
             printf("%s has run away in fear!\n", currNode->data->name);
@@ -162,7 +181,7 @@ void finalResult(HouseType *house, GhostType *ghost) {
         currNode = nextNode;
     }
     printf("---------------------------------------\n");
-    //if ghost wins (when all hunters run away in fear or too bored):
+    // if ghost wins (when all hunters run away in fear or too bored):
     char ghostName[MAX_STR];
     ghostToString(ghost->class, ghostName);
     if (huntersLost >= NUM_HUNTERS) {
@@ -172,15 +191,17 @@ void finalResult(HouseType *house, GhostType *ghost) {
         printf("The ghost was actually a %s\n", ghostName);
     }
 
-    //if hunters win (only when 3 evidence was collected AND at least one hunter reviewed it successfully and left the house safely): 
+    // if hunters win (only when 3 evidence was collected AND at least one hunter reviewed it successfully and left the house safely): 
     else {
+        char hunterResult[MAX_STR];
+        ghostToString(evidenceCheck(&house->evList), hunterResult); // get the ghost type from the hunter evList
         printf("It seems the ghost has been discovered!\n");
         printf("The hunters have won the game!\n");
-        printf("Using the evidence they found, they correctly determined that the ghost is a %s\n", ghostName);
+        printf("Using the evidence they found, they correctly determined that the ghost is a %s\n", hunterResult);
     }
     
     printf("The hunters collected the following evidence:\n");
-    //list evidence collected (no duplicates)
+    // list evidence collected (no duplicates)
     char evName[MAX_STR];
     char EMF = 0;
     char temp = 0;
@@ -191,9 +212,9 @@ void finalResult(HouseType *house, GhostType *ghost) {
     EvidenceNodeType *nextNode1;
     currNode1 = house->evList.head;
 
-    while(currNode1 != NULL) { //loop through the ev list 
+    while(currNode1 != NULL) { // loop through the ev list 
         nextNode1 = currNode1->next; 
-        //this was necessary so no duplicates appear
+        // this was necessary so no duplicates appear
         if (currNode1->evidence == 0 && EMF == 0) {
             evidenceToString(0, evName);
             printf("%s\n", evName);
