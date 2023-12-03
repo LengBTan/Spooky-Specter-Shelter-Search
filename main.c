@@ -9,11 +9,12 @@ int main(){
     initHouse(&house);
     populateRooms(&house);
     
-    HunterType h1,h2,h3,h4;
+    //initialize ghosts
     GhostType ghost;
     initGhost(&ghost, chooseStartingRoom(&house.rooms, &ghost));
 
     // initialize hunters:
+    HunterType h1,h2,h3,h4;
     char name[MAX_STR];
     hunterNameInput(name);
     initHunter(name, &h1, house.rooms.head->data, 0, &house.evList, &house);
@@ -24,20 +25,24 @@ int main(){
     hunterNameInput(name);
     initHunter(name, &h4, house.rooms.head->data, 3, &house.evList, &house);
 
+    //create the threads
     pthread_create(threads+0, NULL, hunterAction, &h1);
     pthread_create(threads+1, NULL, hunterAction, &h2);
     pthread_create(threads+2, NULL, hunterAction, &h3);
     pthread_create(threads+3, NULL, hunterAction, &h4);
     pthread_create(threads+4, NULL, ghostAction, &ghost);
 
+    //joint the threads
     pthread_join(threads[0], NULL);
     pthread_join(threads[1], NULL);
     pthread_join(threads[2], NULL);
     pthread_join(threads[3], NULL);
     pthread_join(threads[4], NULL);
 
+    //print out the final result of the game
     finalResult(&house, &ghost);
 
+    //clean up the house
     cleanupHouse(&house);
     return 0;
 }
