@@ -2,7 +2,7 @@
 - Leng Tan, 101233921
 - Kina Zhan, 101254727
 
-# Spooky Specter Shelter Search
+# Spooky Specter Shelter Search Simulator
 This program demonstrates the use of data structures, dynamic memory allocation, and multiple threads to run a scenario simulation of a game. The program outputs the logs and the result of the simulation in the terminal
 ## List of files:
 - defs.h
